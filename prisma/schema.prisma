@@ -2000,34 +2000,432 @@ model ReviewRequestLog {
   id         String              @id @default(cuid())
   workflowId String
   workflow   ReviewRequestWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  
+
   orderId    String
   customerId String?
   customerEmail String
-  
+
   // Email details
   subject    String
   providerId String? // Resend/SendGrid message ID
-  
+
   status     ReviewRequestStatus @default(PENDING)
-  
+
   sentAt     DateTime?
   openedAt   DateTime?
   clickedAt  DateTime?
   reviewedAt DateTime?
-  
+
   // Reminder tracking
   reminderNumber Int @default(0)
-  
+
   // Error handling
   errorMessage String?
   retryCount   Int  @default(0)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([workflowId])
   @@index([orderId])
   @@index([status])
   @@map("review_request_logs")
+}
+
+// ============================================================================
+// CLOVER POS INTEGRATION
+// ============================================================================
+
+enum CloverSyncStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  PARTIAL
+}
+
+// Store Clover API configuration securely
+model CloverConfig {
+  id            String   @id @default(cuid())
+  merchantId    String   @unique
+  merchantName  String?
+
+  // OAuth tokens (encrypted in production)
+  accessToken   String   @db.Text
+  refreshToken  String?  @db.Text
+  tokenExpiresAt DateTime?
+
+  // API Configuration
+  environment   String   @default("production") // sandbox, production
+  apiVersion    String   @default("v3")
+
+  // Sync settings
+  autoSyncEnabled    Boolean @default(true)
+  syncIntervalMinutes Int    @default(30)
+  lastSyncAt         DateTime?
+
+  // What to sync
+  syncProducts    Boolean @default(true)
+  syncCategories  Boolean @default(true)
+  syncOrders      Boolean @default(true)
+  syncCustomers   Boolean @default(true)
+  syncInventory   Boolean @default(true)
+  syncModifiers   Boolean @default(true)
+
+  // Webhook configuration
+  webhookSecret   String?
+  webhookEnabled  Boolean @default(false)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  syncLogs CloverSyncLog[]
+  items    CloverItem[]
+  orders   CloverOrder[]
+
+  @@map("clover_config")
+}
+
+// Track sync history
+model CloverSyncLog {
+  id          String           @id @default(cuid())
+  configId    String
+  config      CloverConfig     @relation(fields: [configId], references: [id], onDelete: Cascade)
+
+  syncType    String           // full, incremental, items, orders, customers, inventory
+  status      CloverSyncStatus @default(PENDING)
+
+  // Stats
+  itemsSynced      Int @default(0)
+  itemsCreated     Int @default(0)
+  itemsUpdated     Int @default(0)
+  itemsFailed      Int @default(0)
+
+  ordersSynced     Int @default(0)
+  customersSynced  Int @default(0)
+  categoriesSynced Int @default(0)
+  modifiersSynced  Int @default(0)
+
+  // Timing
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  durationMs  Int?
+
+  // Error handling
+  errorMessage String?  @db.Text
+  errorDetails Json?
+
+  // Triggered by
+  triggeredBy String   @default("system") // system, manual, webhook
+  userId      String?  // Admin user who triggered manual sync
+
+  createdAt DateTime @default(now())
+
+  @@index([configId])
+  @@index([status])
+  @@index([syncType])
+  @@map("clover_sync_logs")
+}
+
+// Mirror Clover items for real-time sync
+model CloverItem {
+  id            String       @id @default(cuid())
+  configId      String
+  config        CloverConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+
+  // Clover identifiers
+  cloverId      String       @unique
+  cloverItemId  String?      // Original item ID from Clover
+
+  // Item details from Clover
+  name          String
+  alternateName String?
+  sku           String?
+  price         Int          // Price in cents
+  priceType     String       @default("FIXED") // FIXED, VARIABLE, PER_UNIT
+  unitName      String?
+
+  // Stock tracking
+  stockCount    Int          @default(0)
+  isStockTracked Boolean     @default(true)
+
+  // Category from Clover
+  cloverCategoryId   String?
+  cloverCategoryName String?
+
+  // Tax rates
+  taxRateIds    String[]
+  isRevenue     Boolean      @default(true)
+
+  // Modifiers
+  modifierGroupIds String[]
+
+  // Display
+  imageUrl      String?
+  isHidden      Boolean      @default(false)
+
+  // Link to local product (for two-way sync)
+  localProductId String?     @unique
+  localVariantId String?
+
+  // Sync metadata
+  lastSyncedAt  DateTime     @default(now())
+  cloverModifiedAt DateTime?
+
+  // Cost tracking
+  cost          Int?         // Cost in cents for margin calculation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lineItems CloverOrderLineItem[]
+
+  @@index([configId])
+  @@index([cloverId])
+  @@index([sku])
+  @@index([localProductId])
+  @@map("clover_items")
+}
+
+// Mirror Clover orders
+model CloverOrder {
+  id           String       @id @default(cuid())
+  configId     String
+  config       CloverConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+
+  // Clover identifiers
+  cloverId     String       @unique
+
+  // Order details
+  state        String       // OPEN, LOCKED, PAID, etc.
+  title        String?
+  note         String?
+
+  // Totals (in cents)
+  total        Int          @default(0)
+  subtotal     Int          @default(0)
+  taxAmount    Int          @default(0)
+  tipAmount    Int          @default(0)
+  discountAmount Int        @default(0)
+  serviceCharge Int         @default(0)
+
+  // Customer
+  cloverCustomerId   String?
+  customerName       String?
+  customerEmail      String?
+  customerPhone      String?
+
+  // Employee who created order
+  cloverEmployeeId   String?
+  employeeName       String?
+
+  // Device info
+  deviceId     String?
+
+  // Timestamps from Clover
+  cloverCreatedAt  DateTime?
+  cloverModifiedAt DateTime?
+
+  // Payment info
+  paymentState String?      // OPEN, PAID, REFUNDED
+  paymentIds   String[]
+
+  // Order type
+  orderType    String?      // DINE_IN, TAKE_OUT, DELIVERY
+
+  // Link to local order (for sync)
+  localOrderId String?      @unique
+
+  // Sync metadata
+  lastSyncedAt DateTime     @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lineItems CloverOrderLineItem[]
+  payments  CloverPayment[]
+
+  @@index([configId])
+  @@index([cloverId])
+  @@index([state])
+  @@index([localOrderId])
+  @@map("clover_orders")
+}
+
+// Clover order line items
+model CloverOrderLineItem {
+  id           String      @id @default(cuid())
+  orderId      String
+  order        CloverOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Clover identifiers
+  cloverId     String
+
+  // Item reference
+  cloverItemId String?
+  item         CloverItem? @relation(fields: [cloverItemId], references: [cloverId])
+
+  // Line item details
+  name         String
+  alternateName String?
+  price        Int         // Price in cents
+  unitPrice    Int?
+  quantity     Int         @default(1)
+
+  // Discounts & modifications
+  discountAmount Int       @default(0)
+  modifiers    Json?       // Array of modifier details
+
+  // Notes
+  note         String?
+
+  // Tax
+  taxAmount    Int         @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([cloverItemId])
+  @@map("clover_order_line_items")
+}
+
+// Clover payments
+model CloverPayment {
+  id           String      @id @default(cuid())
+  orderId      String
+  order        CloverOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Clover identifiers
+  cloverId     String      @unique
+
+  // Payment details
+  amount       Int         // Amount in cents
+  tipAmount    Int         @default(0)
+  taxAmount    Int         @default(0)
+
+  // Payment method
+  tender       String?     // CREDIT_CARD, CASH, etc.
+  cardType     String?     // VISA, MASTERCARD, etc.
+  last4        String?     // Last 4 digits of card
+
+  // Status
+  result       String      // SUCCESS, FAIL, etc.
+
+  // External references
+  externalPaymentId String?
+
+  // Timestamps
+  cloverCreatedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@map("clover_payments")
+}
+
+// Clover modifiers and modifier groups
+model CloverModifierGroup {
+  id               String   @id @default(cuid())
+  cloverId         String   @unique
+  merchantId       String
+
+  name             String
+  showByDefault    Boolean  @default(true)
+
+  // Selection rules
+  minRequired      Int      @default(0)
+  maxAllowed       Int?
+
+  // Item associations
+  itemIds          String[]
+
+  lastSyncedAt     DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  modifiers CloverModifier[]
+
+  @@index([merchantId])
+  @@map("clover_modifier_groups")
+}
+
+model CloverModifier {
+  id            String              @id @default(cuid())
+  cloverId      String              @unique
+  groupId       String
+  group         CloverModifierGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  name          String
+  alternateName String?
+  price         Int                 @default(0) // Price in cents
+
+  available     Boolean             @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupId])
+  @@map("clover_modifiers")
+}
+
+// Clover tax rates
+model CloverTaxRate {
+  id           String   @id @default(cuid())
+  cloverId     String   @unique
+  merchantId   String
+
+  name         String
+  rate         Int      // Tax rate as basis points (e.g., 825 = 8.25%)
+  isDefault    Boolean  @default(false)
+
+  // What it applies to
+  taxableAmount String  @default("SUBTOTAL") // SUBTOTAL, NET
+
+  lastSyncedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([merchantId])
+  @@map("clover_tax_rates")
+}
+
+// Clover customers
+model CloverCustomer {
+  id              String   @id @default(cuid())
+  cloverId        String   @unique
+  merchantId      String
+
+  firstName       String?
+  lastName        String?
+
+  // Contact info
+  emailAddresses  String[]
+  phoneNumbers    String[]
+
+  // Address
+  addresses       Json?    // Array of address objects
+
+  // Marketing preferences
+  marketingAllowed Boolean @default(false)
+
+  // Metrics
+  orderCount      Int      @default(0)
+  totalSpent      Int      @default(0) // In cents
+
+  // Link to local user
+  localUserId     String?  @unique
+
+  // Timestamps
+  cloverCreatedAt DateTime?
+  lastSyncedAt    DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([merchantId])
+  @@index([localUserId])
+  @@map("clover_customers")
 }

@@ -38,7 +38,8 @@
       "Bash(gh repo create:*)",
       "Bash(npm uninstall:*)",
       "Bash(git checkout:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebFetch(domain:docs.clover.com)"
     ]
   }
 }
