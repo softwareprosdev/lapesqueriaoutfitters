@@ -1,318 +1,272 @@
-# 🌊 ShennaStudio - Ocean-Themed Bracelet E-Commerce Platform
+# La Pesqueria Outfitters
 
 <div align="center">
 
-![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js)
-![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)
-![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma)
+![Prisma](https://img.shields.io/badge/Prisma-5-2D3748?style=for-the-badge&logo=prisma)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4-38B2AC?style=for-the-badge&logo=tailwind-css)
 
-**Handcrafted Ocean-Themed Bracelets Supporting Marine Conservation**
+**Premium Fishing Apparel & Marine Gear for the Elite Angler**
 
-[Live Demo](https://shennastudiowebsite-production.up.railway.app) • [Admin Panel](https://shennastudiowebsite-production.up.railway.app/admin) • [Report Bug](https://github.com/shennastudio/shennastudiowebsite/issues)
+*McAllen, TX*
 
 </div>
 
 ---
 
-## 🎯 Overview
+## Overview
 
-ShennaStudio is a production-ready e-commerce platform dedicated to selling handcrafted ocean-themed bracelets. Built with modern web technologies, it features a comprehensive admin panel for product management, order tracking, and site customization. **10% of all sales support marine conservation efforts** in the Rio Grande Valley and South Padre Island.
+La Pesqueria Outfitters is a premium e-commerce platform for fishing apparel, performance gear, and outdoor accessories. Built for serious anglers and luxury yacht owners, the platform features an Elite Marine Dashboard with real-time tide data, weather conditions, and vessel tracking.
 
-## ✨ Features
+### Key Features
 
-### 🛍️ Customer Features
-- **Product Catalog** - Browse beautiful ocean-themed handcrafted bracelets
-- **Product Variants** - Multiple sizes, colors, and materials per product
-- **Shopping Cart** - Real-time cart with automatic tax and shipping calculation
-- **Conservation Info** - See how your purchase supports marine life
-- **Responsive Design** - Perfect experience on mobile, tablet, and desktop
-
-### 🎨 Admin Panel
-- **Dashboard** - Real-time statistics and insights
-- **Product Management** - Full CRUD operations with drag-and-drop image uploads
-- **Category Management** - Organize products into categories
-- **Order Tracking** - View all orders with detailed customer information
-- **Site Settings** - Update logo, branding, and contact information
-- **Image Upload** - Drag-and-drop image uploads to Vercel Blob Storage
-- **Account Settings** - Secure password change functionality
-
-### 🔒 Security
-- **NextAuth.js** - Secure authentication and session management
-- **Role-Based Access** - Admin, staff, and customer roles
-- **Protected API Routes** - All admin operations require authentication
-- **Password Hashing** - Bcrypt encryption for user passwords
+- **Premium E-commerce** - T-shirts, hats, hoodies, performance wear, and fishing accessories
+- **Elite Marine Dashboard** - Real-time tides, weather, solunar data, and AIS vessel tracking
+- **Clover POS Integration** - Sync inventory directly from your physical store
+- **PWA Support** - Install as a native app on mobile devices
+- **Admin Panel** - Full inventory, order, and customer management
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### **Frontend**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Next.js | 15.5.9 | React framework with App Router |
-| React | 19.2.3 | UI library |
-| TypeScript | 5.x | Type safety |
-| Tailwind CSS | 4.x | Utility-first CSS |
-| shadcn/ui | Latest | UI component library |
-
-### **Backend & Database**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Prisma ORM | 5.22.0 | Database ORM and migrations |
-| PostgreSQL | 15+ | Primary database |
-| NextAuth.js | 4.24.13 | Authentication |
-
-### **Storage & Deployment**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Vercel Blob | Latest | Image storage |
-| Railway | Latest | Production hosting |
-| Stripe | 20.1.0 | Payment processing |
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | Next.js 16, React 19, TypeScript 5 |
+| **Styling** | Tailwind CSS 4, Framer Motion |
+| **Database** | PostgreSQL, Prisma ORM |
+| **Auth** | NextAuth.js |
+| **Payments** | Stripe |
+| **Storage** | Cloudinary, Vercel Blob |
+| **POS** | Clover API Integration |
+| **PWA** | Serwist (Service Worker) |
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
+
 ```bash
 node >= 20.0.0
 npm >= 10.0.0
 postgresql >= 15
 ```
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/shennastudio/shennastudiowebsite.git
-cd shennastudiowebsite
-```
+### Installation
 
-### 2. Install Dependencies
 ```bash
+# Clone the repository
+git clone https://github.com/shennastudio/lapesqueriaoutfitters.git
+cd lapesqueriaoutfitters
+
+# Install dependencies
 npm install
-```
 
-### 3. Environment Setup
-Create a `.env.local` file in the root directory:
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
 
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/shennastudio"
-
-# NextAuth
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-nextauth-secret-here
-
-# Vercel Blob Storage
-BLOB_READ_WRITE_TOKEN=vercel_blob_rw_your_token_here
-
-# Stripe (PRODUCTION)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_your_key
-STRIPE_SECRET_KEY=sk_live_your_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-```
-
-### 4. Database Setup
-```bash
-# Generate Prisma Client
+# Set up database
 npx prisma generate
-
-# Push schema to database
 npx prisma db push
 
-# Seed initial data (admin user + sample products)
-npm run db:seed
-```
-
-### 5. Run Development Server
-```bash
+# Run development server
 npm run dev
 ```
 
-Visit `http://localhost:3000` to see your site!
+Visit `http://localhost:3000`
 
 ---
 
-## 📁 Project Structure
+## Environment Variables
 
-```
-shennastudio/
-├── prisma/
-│   ├── schema.prisma          # Database schema
-│   └── seed.ts                # Seed script
-├── src/
-│   ├── app/
-│   │   ├── admin/             # Admin panel pages
-│   │   │   ├── products/      # Product management
-│   │   │   ├── categories/    # Category management
-│   │   │   ├── orders/        # Order management
-│   │   │   ├── settings/      # Site settings
-│   │   │   └── account/       # Account settings
-│   │   ├── api/
-│   │   │   ├── admin/         # Admin API routes
-│   │   │   └── auth/          # Authentication
-│   │   ├── actions.ts         # Server actions
-│   │   └── page.tsx           # Homepage
-│   ├── components/
-│   │   ├── admin/             # Admin components
-│   │   │   ├── ImageUpload.tsx
-│   │   │   └── MultiImageUpload.tsx
-│   │   └── ui/                # shadcn/ui components
-│   └── lib/
-│       ├── db.ts              # Prisma client
-│       └── auth.ts            # NextAuth configuration
-├── public/                    # Static assets
-├── .env.local                 # Environment variables
-└── next.config.ts             # Next.js configuration
+Create a `.env.local` file with these variables:
+
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/lapesqueria
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secure-secret-32-chars-minimum
+
+# Stripe
+STRIPE_SECRET_KEY=sk_live_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# Cloudinary
+CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+
+# Clover POS (Optional)
+CLOVER_APP_ID=your_app_id
+CLOVER_APP_SECRET=your_app_secret
+CLOVER_MERCHANT_ID=your_merchant_id
+CLOVER_ACCESS_TOKEN=your_access_token
+CLOVER_ENVIRONMENT=production
+
+# Analytics (Optional)
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_CLARITY_PROJECT_ID=your_clarity_id
 ```
 
 ---
 
-## 🎨 Admin Panel
+## Project Structure
 
-### Access Admin Panel
-- **URL**: `http://localhost:3000/admin/login`
-- **Default Credentials**:
-  - Email: `admin@shennastudio.com`
-  - Password: `admin123`
-
-⚠️ **IMPORTANT**: Change the default password immediately after first login!
-
-### Admin Features
-- **Dashboard**: View sales statistics, order counts, and revenue
-- **Products**: Add, edit, delete products with drag-and-drop images
-- **Categories**: Organize products into categories
-- **Orders**: Track customer orders and fulfillment status
-- **Settings**: Update site logo, branding, and contact info
-- **Account**: Change admin password and view account details
+```
+src/
+├── app/
+│   ├── admin/              # Admin panel pages
+│   ├── api/                # API routes
+│   │   ├── admin/          # Admin APIs
+│   │   └── marine/         # Marine data APIs
+│   ├── products/           # Product pages
+│   └── page.tsx            # Homepage
+├── components/
+│   ├── admin/              # Admin components
+│   ├── fishing-dashboard/  # Marine dashboard
+│   │   ├── panels/         # Dashboard panels
+│   │   └── hooks/          # Data hooks
+│   └── ui/                 # UI components
+├── lib/
+│   ├── clover.ts           # Clover POS client
+│   ├── marine/             # Marine data utilities
+│   └── stripe.ts           # Stripe integration
+└── types/
+    └── marine.ts           # Marine data types
+```
 
 ---
 
-## 📦 Database Schema
+## Elite Marine Dashboard
 
-### Key Models
-- **User**: Admin, staff, and customer accounts
-- **Product**: Product information with variants
-- **ProductVariant**: Size, color, material variations
-- **ProductImage**: Multiple images per product
-- **Category**: Product categorization
-- **Order**: Customer orders and fulfillment
-- **OrderItem**: Individual items in orders
-- **ConservationDonation**: Track conservation contributions
-- **SiteSettings**: Logo, branding, contact information
+The dashboard provides real-time marine data for serious anglers:
 
----
+| Panel | Data Source |
+|-------|-------------|
+| **Yacht Navigation** | GPS, heading, speed |
+| **Tides** | NOAA CO-OPS API |
+| **Weather** | NOAA NWS + Open-Meteo |
+| **Solunar** | Calculated moon phases |
+| **Marina** | Berth availability |
+| **VIP Forecast** | AI-powered fishing predictions |
 
-## 🌐 Deployment
+### Data Sources
 
-### Deploy to Railway
-
-1. **Install Railway CLI**
-```bash
-npm install -g @railway/cli
-```
-
-2. **Login to Railway**
-```bash
-railway login
-```
-
-3. **Initialize Project**
-```bash
-railway link
-```
-
-4. **Set Environment Variables**
-```bash
-railway variables --set "DATABASE_URL=postgresql://..."
-railway variables --set "NEXTAUTH_SECRET=your-secret"
-railway variables --set "NEXTAUTH_URL=https://your-domain.up.railway.app"
-railway variables --set "BLOB_READ_WRITE_TOKEN=vercel_blob_rw_..."
-```
-
-5. **Deploy**
-```bash
-railway up
-```
-
-6. **Run Migrations**
-```bash
-railway run npx prisma db push
-railway run npm run db:seed
-```
-
-Your site is now live! 🎉
+- **NOAA CO-OPS** - Tide predictions and water levels
+- **NOAA NWS** - Weather forecasts and marine alerts
+- **Open-Meteo** - Wave height, wind, and marine conditions
+- **AIS** - Real-time vessel tracking (WebSocket)
 
 ---
 
-## 🧪 Development
+## Clover POS Sync
 
-### Available Scripts
+Sync your physical store inventory with the online store:
+
+1. Navigate to `/admin/clover-sync`
+2. Enter your Clover API Token and Merchant ID
+3. Click "Fetch Clover Data"
+4. Select what to import (items, categories, customers, orders)
+5. Click "Import Selected Data"
+
+### Getting Clover Credentials
+
+| Credential | Location |
+|------------|----------|
+| API Token | Clover Dashboard → Settings → API Tokens |
+| Merchant ID | Found in your Clover Dashboard URL |
+| App ID/Secret | Clover Developer Dashboard |
+
+---
+
+## Admin Panel
+
+Access: `/admin/login`
+
+### Features
+
+- **Dashboard** - Sales analytics, revenue charts
+- **Products** - Full CRUD with image uploads
+- **Orders** - Order tracking and fulfillment
+- **Customers** - Customer management and segments
+- **Inventory** - Stock levels and alerts
+- **Blog** - Content management
+- **Clover Sync** - POS integration
+- **Settings** - Site configuration
+
+---
+
+## Scripts
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
+npm run dev          # Development server
+npm run build        # Production build
+npm run start        # Production server
+npm run lint         # ESLint
 
 # Database
 npm run db:generate  # Generate Prisma client
 npm run db:push      # Push schema changes
-npm run db:seed      # Seed database
-npm run db:studio    # Open Prisma Studio
+npm run db:migrate   # Run migrations
+npm run db:studio    # Prisma Studio GUI
 ```
 
-### Code Quality
-- **TypeScript**: Full type safety across the codebase
-- **ESLint**: Code linting and formatting
-- **Prisma**: Type-safe database queries
-- **Git Hooks**: Pre-commit checks (coming soon)
+---
+
+## Deployment
+
+### Coolify VPS
+
+1. Create a new service in Coolify
+2. Connect to the GitHub repository
+3. Add environment variables
+4. Deploy
+
+### Required Environment Variables for Production
+
+```env
+DATABASE_URL
+NEXTAUTH_URL
+NEXTAUTH_SECRET
+STRIPE_SECRET_KEY
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+STRIPE_WEBHOOK_SECRET
+CLOUDINARY_URL
+```
 
 ---
 
-## 🤝 Contributing
+## PWA Support
 
-We welcome contributions! Please follow these steps:
+The site works as a Progressive Web App:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m '🎨 Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- **Offline Support** - Cached marine data available offline
+- **Install Prompt** - Add to home screen on mobile
+- **Push Notifications** - (Coming soon)
 
 ---
 
-## 📝 License
+## License
 
-This project is proprietary and confidential. Unauthorized copying or distribution is prohibited.
-
----
-
-## 🐛 Support
-
-Having issues? Please check:
-- [GitHub Issues](https://github.com/shennastudio/shennastudiowebsite/issues)
-- [Documentation](./docs)
-- Email: admin@shennastudio.com
+Proprietary. All rights reserved.
 
 ---
 
-## 🌊 Conservation Mission
+## Support
 
-**10% of every sale supports marine conservation** in:
-- 🐢 Sea Turtle Conservation - South Padre Island
-- 🐋 Whale Protection Programs
-- 🦈 Shark Research Initiatives
-- 🌊 Ocean Ecosystem Restoration - Rio Grande Valley
+- **Issues**: [GitHub Issues](https://github.com/shennastudio/lapesqueriaoutfitters/issues)
+- **Location**: McAllen, TX
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for Ocean Conservation**
-
-[Website](https://shennastudiowebsite-production.up.railway.app) • [Admin](https://shennastudiowebsite-production.up.railway.app/admin) • [GitHub](https://github.com/shennastudio/shennastudiowebsite)
+**La Pesqueria Outfitters** - *Premium Fishing Gear for the Elite Angler*
 
 </div>
