@@ -117,7 +117,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-gradient-to-r from-slate-50/95 via-white/95 to-orange-50/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-slate-200/50">
+    <header className="bg-white shadow-md sticky top-0 z-50 border-b border-gray-200">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <div className="flex justify-between items-center h-28">
           {/* Logo */}

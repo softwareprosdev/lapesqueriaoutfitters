@@ -14,6 +14,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:admin": "tsx scripts/seed-admin.ts",
     "db:seed:blog": "tsx scripts/seed-blog.ts",
     "db:seed:sharks": "tsx scripts/seed-shark-blogs.ts",
     "db:seed:blogs": "tsx scripts/seed-blog.ts && tsx scripts/seed-shark-blogs.ts",
