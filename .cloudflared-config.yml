@@ -1,0 +1,7 @@
+tunnel: bead-bracelet-tunnel
+credentials-file: /Users/miracle/.cloudflared/cert.pem
+
+ingress:
+  - hostname: "*.trycloudflare.com"
+    service: http://localhost:3000
+  - service: http_status:404

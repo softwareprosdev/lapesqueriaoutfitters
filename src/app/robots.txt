@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+
+# Allow all major search engines to crawl the site
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /account/
+Disallow: /api/auth/
+
+# Allow access to sitemap and robots.txt
+Allow: /sitemap.xml
+Allow: /robots.txt
+
+# Sitemap location
+Sitemap: https://lapesqueria.com/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

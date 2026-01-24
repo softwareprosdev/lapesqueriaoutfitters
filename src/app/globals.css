@@ -1,0 +1,926 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "tw-animate-css";
+@import "../styles/blog.css";
+
+/* Force dark mode class strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  /* ========================================
+     LA PESQUERIA OUTFITTERS - "Deep Sea & High-Vis" Theme
+     WCAG 2.1 AA Compliant
+     ======================================== */
+
+  /* Radius */
+  --radius: 0.625rem;
+
+  /* Light Mode Color Palette - La Pesqueria Outfitters */
+  --background: #F8FAFC; /* Fog White - Dashboard background */
+  --foreground: #001F3F; /* Abyss Navy - Primary text */
+
+  /* Surface / Card */
+  --card: #FFFFFF;
+  --card-foreground: #001F3F;
+
+  /* Popover */
+  --popover: #FFFFFF;
+  --popover-foreground: #001F3F;
+
+  /* Primary Brand Colors - Abyss Navy */
+  --primary: #001F3F;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #002D5C;
+
+  /* Secondary Accent - Coastline Slate */
+  --secondary: #494949;
+  --secondary-foreground: #FFFFFF;
+
+  /* Text Colors */
+  --muted: #F1F5F9;
+  --muted-foreground: #494949; /* Coastline Slate */
+  --text-secondary: #494949;
+
+  /* Accent - Buoy Orange for CTAs */
+  --accent: #FF4500;
+  --accent-foreground: #FFFFFF;
+
+  /* Destructive / Error / Success */
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --success: #2D5A27; /* Kelp Green */
+  --success-foreground: #FFFFFF;
+
+  /* Border */
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #FF4500; /* Buoy Orange */
+
+  /* Luxury Gold Theme - Premium Marine Dashboard */
+  --gold: #D4AF37;
+  --gold-light: #F5E6CC;
+  --gold-dark: #8B7355;
+  --platinum: #E5E4E2;
+  --deep-sea: #000814;
+  --ocean-blue: #001233;
+  --ocean-cyan: #00D4FF;
+  --ocean-teal: #20B2AA;
+  
+  /* Charts */
+  --chart-1: oklch(0.49 0.24 265);
+  --chart-2: oklch(0.7 0.17 162);
+  --chart-3: oklch(0.77 0.19 70);
+  --chart-4: oklch(0.63 0.27 304);
+  --chart-5: oklch(0.65 0.25 16);
+  
+  /* Sidebar (for admin) */
+  --sidebar: oklch(0.08 0.012 250);
+  --sidebar-foreground: oklch(0.98 0.003 250);
+  --sidebar-primary: oklch(0.53 0.16 190);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.18 0.035 190);
+  --sidebar-accent-foreground: oklch(0.9 0.03 190);
+  --sidebar-border: oklch(0.25 0.025 250);
+  --sidebar-ring: oklch(0.55 0.14 190);
+
+  /* Admin Panel Theme Variables - Dark Mode Defaults */
+  --background-primary: #0f1419;
+  --background-secondary: #1a1f2e;
+  --background-tertiary: #242b3d;
+  --background-elevated: #2a3245;
+  --text-primary: #f0f4f8;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  --accent-primary: #06b6d4;
+  --accent-secondary: #22d3ee;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.2);
+
+  /* Safe Area Spacing Variables */
+  --spacing-safe-top: env(safe-area-inset-top);
+  --spacing-safe-bottom: env(safe-area-inset-bottom);
+  --spacing-safe-left: env(safe-area-inset-left);
+  --spacing-safe-right: env(safe-area-inset-right);
+}
+
+/* ========================================
+   DARK MODE - Admin Panel Only
+   Applied via .dark class on admin routes
+   ==================================== */
+.dark {
+  --background: oklch(0.08 0.012 250);
+  --foreground: oklch(0.98 0.003 250);
+  
+  --card: oklch(0.12 0.015 250);
+  --card-foreground: oklch(0.98 0.003 250);
+  
+  --popover: oklch(0.12 0.015 250);
+  --popover-foreground: oklch(0.98 0.003 250);
+  
+  --primary: oklch(0.53 0.16 190);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-hover: oklch(0.6 0.15 190);
+  
+  --secondary: oklch(0.18 0.025 250);
+  --secondary-foreground: oklch(0.9 0.02 250);
+  
+  --muted: oklch(0.18 0.025 250);
+  --muted-foreground: oklch(0.65 0.03 250);
+  --text-secondary: oklch(0.75 0.03 250);
+  
+  --accent: oklch(0.18 0.04 190);
+  --accent-foreground: oklch(0.9 0.03 190);
+  
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.48 0.22 145);
+  --success-foreground: oklch(0.99 0 0);
+  
+  --border: oklch(0.25 0.025 250);
+  --input: oklch(0.25 0.025 250);
+  --ring: oklch(0.55 0.14 190);
+  
+  --chart-1: oklch(0.49 0.24 265);
+  --chart-2: oklch(0.7 0.17 162);
+  --chart-3: oklch(0.77 0.19 70);
+  --chart-4: oklch(0.63 0.27 304);
+  --chart-5: oklch(0.65 0.25 16);
+  
+  --sidebar: oklch(0.08 0.012 250);
+  --sidebar-foreground: oklch(0.98 0.003 250);
+  --sidebar-primary: oklch(0.53 0.16 190);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.18 0.035 190);
+  --sidebar-accent-foreground: oklch(0.9 0.03 190);
+  --sidebar-border: oklch(0.25 0.025 250);
+  --sidebar-ring: oklch(0.55 0.14 190);
+
+  /* Admin dark mode overrides for all elements */
+  --background-primary: #0f1419;
+  --background-secondary: #1a1f2e;
+  --background-tertiary: #242b3d;
+  --background-elevated: #2a3245;
+  --text-primary: #f0f4f8;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+@theme inline {
+  --spacing-safe-top: var(--spacing-safe-top);
+  --spacing-safe-bottom: var(--spacing-safe-bottom);
+  --spacing-safe-left: var(--spacing-safe-left);
+  --spacing-safe-right: var(--spacing-safe-right);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground overflow-x-hidden w-full;
+    font-family: var(--font-body), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* Bathymetric topography background pattern - Maritime technical feel */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 304 304' width='304' height='304'%3E%3Cpath fill='%23001F3F' fill-opacity='0.03' d='M44.1 224a5 5 0 1 1 0 2H0v-2h44.1zm160 48a5 5 0 1 1 0 2H82v-2h122.1zm57.8-46a5 5 0 1 1 0-2H304v2h-42.1zm0 16a5 5 0 1 1 0-2H304v2h-42.1zm6.2-114a5 5 0 1 1 0 2h-86.2a5 5 0 1 1 0-2h86.2zm-256-48a5 5 0 1 1 0 2H0v-2h12.1zm185.8 34a5 5 0 1 1 0-2h86.2a5 5 0 1 1 0 2h-86.2zM258 12.1a5 5 0 1 1-2 0V0h2v12.1zm-64 208a5 5 0 1 1-2 0v-54.2a5 5 0 1 1 2 0v54.2zm48-198.2V80h62v2h-64V21.9a5 5 0 1 1 2 0zm16 16V64h46v2h-48V37.9a5 5 0 1 1 2 0zm-128 96V208h16v12.1a5 5 0 1 1-2 0V210h-16v-76.1a5 5 0 1 1 2 0zm-5.9-21.9a5 5 0 1 1 0 2H114v48H85.9a5 5 0 1 1 0-2H112v-48h12.1zm-6.2 130a5 5 0 1 1 0-2H176v-74.1a5 5 0 1 1 2 0V242h-60.1zm-16-64a5 5 0 1 1 0-2H114v48h10.1a5 5 0 1 1 0 2H112v-48h-10.1zM66 284.1a5 5 0 1 1-2 0V274H50v30h-2v-32h18v12.1zM236.1 176a5 5 0 1 1 0 2H226v94h48v32h-2v-30h-48v-98h12.1zm25.8-30a5 5 0 1 1 0-2H274v44.1a5 5 0 1 1-2 0V146h-10.1zm-64 96a5 5 0 1 1 0-2H208v-80h16v-14h-42.1a5 5 0 1 1 0-2H226v18h-16v80h-12.1zm86.2-210a5 5 0 1 1 0 2H272V0h2v32h10.1zM98 101.9V146H53.9a5 5 0 1 1 0-2H96v-42.1a5 5 0 1 1 2 0zM53.9 34a5 5 0 1 1 0-2H80V0h2v34H53.9zm60.1 3.9V66H82v64H69.9a5 5 0 1 1 0-2H80V64h32V37.9a5 5 0 1 1 2 0zM101.9 82a5 5 0 1 1 0-2H128V37.9a5 5 0 1 1 2 0V82h-28.1zm16-64a5 5 0 1 1 0-2H146v44.1a5 5 0 1 1-2 0V18h-26.1zm102.2 270a5 5 0 1 1 0 2H98v14h-2v-16h124.1zM242 149.9V160h16v34h-16v62h48v48h-2v-46h-48v-66h16v-30h-16v-12.1a5 5 0 1 1 2 0zM53.9 18a5 5 0 1 1 0-2H64V2H48V0h18v18H53.9zm112 32a5 5 0 1 1 0-2H192V0h50v2h-48v48h-28.1zm-48-48a5 5 0 0 1-9.8-2h2.07a3 3 0 1 0 5.66 0H178v34h-18V21.9a5 5 0 1 1 2 0V32h14V0h-28.1zm0 96a5 5 0 1 1 0-2H192v-34h-26.1a5 5 0 1 1 0-2H194v36h-28.1z'/%3E%3C/svg%3E");
+  }
+
+  /* Heading fonts - bold, masculine Roboto Condensed */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), 'Roboto Condensed', -apple-system, sans-serif;
+    font-weight: 700;
+  }
+
+  /* Enforce 16px min font size for inputs to prevent Safari zoom */
+  input, select, textarea, button {
+    font-size: 16px !important;
+  }
+
+  /* Font utility classes */
+  .font-heading {
+    font-family: var(--font-heading), 'Roboto Condensed', -apple-system, sans-serif;
+  }
+
+  .font-body {
+    font-family: var(--font-body), 'Inter', -apple-system, sans-serif;
+  }
+}
+
+@utility h-dvh {
+  height: 100dvh;
+}
+
+@utility pt-safe-top {
+  padding-top: var(--spacing-safe-top);
+}
+
+@utility pb-safe-bottom {
+  padding-bottom: var(--spacing-safe-bottom);
+}
+
+@utility pl-safe-left {
+  padding-left: var(--spacing-safe-left);
+}
+
+@utility pr-safe-right {
+  padding-right: var(--spacing-safe-right);
+}
+
+
+/* Remove separate .dark block since it's now default in :root */
+
+
+@layer base {
+  /* Force dark mode for admin section */
+  .admin-dark {
+    --background: oklch(0.06 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.12 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.12 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.488 0.243 264.376);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.2 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.2 0 0);
+    --muted-foreground: oklch(0.7 0 0);
+    --accent: oklch(0.2 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.6 0.2 25);
+    --border: oklch(0.2 0 0);
+    --input: oklch(0.2 0 0);
+    --ring: oklch(0.8 0 0);
+  }
+
+  /* Admin dark mode overrides for all elements */
+  .admin-dark,
+  .admin-dark body,
+  .admin-dark .bg-white,
+  .admin-dark .bg-gray-50,
+  .admin-dark .bg-gray-100,
+  .admin-dark .bg-gray-200 {
+    background-color: oklch(0.06 0 0) !important;
+  }
+
+  .admin-dark .text-gray-900,
+  .admin-dark .text-gray-800,
+  .admin-dark .text-gray-700,
+  .admin-dark .text-gray-600 {
+    color: oklch(0.985 0 0) !important;
+  }
+
+  .admin-dark .text-gray-500,
+  .admin-dark .text-gray-400 {
+    color: oklch(0.7 0 0) !important;
+  }
+
+  .admin-dark .border,
+  .admin-dark .border-gray-200,
+  .admin-dark .border-gray-300 {
+    border-color: oklch(0.2 0 0) !important;
+  }
+
+  /* Table fixes for admin dark mode */
+  .admin-dark table,
+  .admin-dark thead,
+  .admin-dark tbody,
+  .admin-dark tr,
+  .admin-dark td,
+  .admin-dark th {
+    background-color: oklch(0.12 0 0) !important;
+    color: oklch(0.985 0 0) !important;
+    border-color: oklch(0.2 0 0) !important;
+  }
+
+  .admin-dark thead,
+  .admin-dark thead tr,
+  .admin-dark thead th {
+    background-color: oklch(0.15 0 0) !important;
+  }
+
+  /* Input and select fixes */
+  .admin-dark input,
+  .admin-dark select,
+  .admin-dark textarea {
+    background-color: oklch(0.15 0 0) !important;
+    color: oklch(0.985 0 0) !important;
+    border-color: oklch(0.3 0 0) !important;
+  }
+
+  .admin-dark input::placeholder,
+  .admin-dark textarea::placeholder {
+    color: oklch(0.5 0 0) !important;
+  }
+
+  /* Dropdown/Select content fixes */
+  .admin-dark [role="listbox"],
+  .admin-dark .select-content,
+  .admin-dark [role="option"] {
+    background-color: oklch(0.15 0 0) !important;
+    color: oklch(0.985 0 0) !important;
+  }
+
+  .admin-dark [role="option"]:hover,
+  .admin-dark [role="option"]:focus {
+    background-color: oklch(0.2 0 0) !important;
+  }
+
+  /* Dialog/Modal fixes */
+  .admin-dark [role="dialog"],
+  .admin-dark .dialog-content,
+  .admin-dark .modal-content {
+    background-color: oklch(0.12 0 0) !important;
+    color: oklch(0.985 0 0) !important;
+  }
+
+  /* Badge fixes */
+  .admin-dark .badge,
+  .admin-dark [class*="bg-"][class*="text-"] {
+    border-color: oklch(0.2 0 0) !important;
+  }
+}
+
+/* Force dark mode on all admin pages */
+body:has(#admin-wrapper),
+body:has(.admin-section) {
+  --background: oklch(0.06 0 0);
+  --foreground: oklch(0.985 0 0);
+}
+
+/* Modern Scrollbar - La Pesqueria Theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 31, 63, 0.1) 0%,
+    rgba(0, 45, 92, 0.1) 50%,
+    rgba(255, 69, 0, 0.05) 100%
+  );
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #001F3F 0%,
+    #002D5C 50%,
+    #FF4500 100%
+  );
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #002D5C 0%,
+    #003D7A 50%,
+    #FF5722 100%
+  );
+  background-clip: padding-box;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 31, 63, 0.2) 0%,
+    rgba(0, 45, 92, 0.2) 50%,
+    rgba(255, 69, 0, 0.1) 100%
+  );
+}
+
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #001F3F rgba(0, 31, 63, 0.1);
+}
+
+.dark * {
+  scrollbar-color: #002D5C rgba(0, 31, 63, 0.2);
+}
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.dark .ProseMirror p.is-editor-empty:first-child::before {
+  color: #6b7280;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+.dark .ProseMirror h2 {
+  color: #f1f5f9;
+}
+
+.ProseMirror h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+  color: #334155;
+}
+
+.dark .ProseMirror h3 {
+  color: #e2e8f0;
+}
+
+.ProseMirror p {
+  margin-bottom: 1em;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.dark .ProseMirror p {
+  color: #cbd5e1;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.ProseMirror ul li {
+  list-style-type: disc;
+  margin-bottom: 0.5em;
+  color: #475569;
+}
+
+.dark .ProseMirror ul li {
+  color: #cbd5e1;
+}
+
+.ProseMirror ol li {
+  list-style-type: decimal;
+  margin-bottom: 0.5em;
+  color: #475569;
+}
+
+.dark .ProseMirror ol li {
+  color: #cbd5e1;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #0891b2;
+  padding-left: 1em;
+  margin-left: 0;
+  margin-bottom: 1em;
+  font-style: italic;
+  color: #64748b;
+}
+
+.dark .ProseMirror blockquote {
+  border-left-color: #14b8a6;
+  color: #94a3b8;
+}
+
+.ProseMirror code {
+  background-color: #f1f5f9;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25em;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  color: #0891b2;
+}
+
+.dark .ProseMirror code {
+  background-color: #334155;
+  color: #2dd4bf;
+}
+
+.ProseMirror pre {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin-bottom: 1em;
+}
+
+.dark .ProseMirror pre {
+  background-color: #0f172a;
+}
+
+.ProseMirror pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Animation Keyframes */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* ========================================
+   ADMIN PANEL DARK MODE UTILITIES
+   ======================================== */
+
+/* These utilities automatically apply dark mode to common admin patterns */
+
+/* Admin page backgrounds */
+.dark .admin-page,
+.dark [data-admin-page] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 23 42 / var(--tw-bg-opacity)); /* slate-900 */
+}
+
+/* Common light backgrounds that need dark variants */
+.dark .bg-white {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+}
+
+.dark .bg-gray-50,
+.dark .bg-slate-50 {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .bg-gray-100,
+.dark .bg-slate-100 {
+  background-color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+.dark .bg-gray-50,
+.dark .bg-slate-50 {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .bg-gray-100,
+.dark .bg-slate-100 {
+  background-color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+/* Common text colors */
+.dark .text-gray-900,
+.dark .text-slate-900 {
+  color: rgb(248 250 252) !important; /* slate-50 */
+}
+
+.dark .text-gray-800,
+.dark .text-slate-800 {
+  color: rgb(241 245 249) !important; /* slate-100 */
+}
+
+.dark .text-gray-700,
+.dark .text-slate-700 {
+  color: rgb(226 232 240) !important; /* slate-200 */
+}
+
+.dark .text-gray-600,
+.dark .text-slate-600 {
+  color: rgb(203 213 225) !important; /* slate-300 */
+}
+
+.dark .text-gray-500,
+.dark .text-slate-500 {
+  color: rgb(148 163 184) !important; /* slate-400 */
+}
+
+.dark .text-gray-800,
+.dark .text-slate-800 {
+  color: rgb(241 245 249) !important; /* slate-100 */
+}
+
+.dark .text-gray-700,
+.dark .text-slate-700 {
+  color: rgb(226 232 240) !important; /* slate-200 */
+}
+
+.dark .text-gray-600,
+.dark .text-slate-600 {
+  color: rgb(203 213 225) !important; /* slate-300 */
+}
+
+.dark .text-gray-500,
+.dark .text-slate-500 {
+  color: rgb(148 163 184) !important; /* slate-400 */
+}
+
+/* Common border colors */
+.dark .border-gray-200,
+.dark .border-slate-200,
+.dark .border-gray-300,
+.dark .border-slate-300 {
+  border-color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+.dark .border-gray-100,
+.dark .border-slate-100 {
+  border-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .border-gray-100,
+.dark .border-slate-100 {
+  border-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+/* Form inputs in dark mode */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+  border-color: rgb(71 85 105) !important; /* slate-600 */
+  color: rgb(248 250 252) !important; /* slate-50 */
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgb(148 163 184) !important; /* slate-400 */
+}
+
+/* Hover states */
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-slate-50:hover {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-slate-100:hover {
+  background-color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-slate-100:hover {
+  background-color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+/* Priority and status badges */
+.dark .bg-slate-100.text-slate-700,
+.dark .bg-gray-100.text-gray-700,
+.dark .bg-gray-100.text-gray-800 {
+  background-color: rgb(51 65 85) !important;
+  color: rgb(226 232 240) !important;
+}
+
+.dark .bg-yellow-100.text-yellow-700,
+.dark .bg-yellow-100.text-yellow-800 {
+  background-color: rgb(113 63 18) !important;
+  color: rgb(254 240 138) !important;
+}
+
+.dark .bg-orange-100.text-orange-700,
+.dark .bg-orange-100.text-orange-800 {
+  background-color: rgb(124 45 18) !important;
+  color: rgb(254 215 170) !important;
+}
+
+.dark .bg-red-100.text-red-700,
+.dark .bg-red-100.text-red-800 {
+  background-color: rgb(127 29 29) !important;
+  color: rgb(254 202 202) !important;
+}
+
+.dark .bg-green-100.text-green-700,
+.dark .bg-green-100.text-green-800 {
+  background-color: rgb(20 83 45) !important;
+  color: rgb(187 247 208) !important;
+}
+
+.dark .bg-blue-100.text-blue-700,
+.dark .bg-blue-100.text-blue-800 {
+  background-color: rgb(30 58 138) !important;
+  color: rgb(191 219 254) !important;
+}
+
+.dark .bg-purple-100.text-purple-700,
+.dark .bg-purple-100.text-purple-800 {
+  background-color: rgb(88 28 135) !important;
+  color: rgb(233 213 255) !important;
+}
+
+.dark .bg-cyan-100.text-cyan-700,
+.dark .bg-cyan-100.text-cyan-800 {
+  background-color: rgb(22 78 99) !important;
+  color: rgb(165 243 252) !important;
+}
+
+.dark .bg-emerald-100.text-emerald-700,
+.dark .bg-emerald-100.text-emerald-800 {
+  background-color: rgb(6 78 59) !important;
+  color: rgb(167 243 208) !important;
+}
+
+/* Gradient text - ensure visibility in dark mode */
+.dark .bg-gradient-to-r.from-slate-900.via-cyan-900.to-teal-900.bg-clip-text {
+  background-image: linear-gradient(to right, rgb(248 250 252), rgb(34 211 238), rgb(45 212 191)) !important;
+}
+
+/* Calendar day cells */
+.dark .bg-white.hover\:bg-slate-50 {
+  background-color: rgb(30 41 59) !important;
+}
+
+.dark .bg-white.hover\:bg-slate-50:hover {
+  background-color: rgb(51 65 85) !important;
+}
+
+/* Modal/Dialog backgrounds */
+.dark .bg-slate-900\/50 {
+  background-color: rgb(15 23 42 / 0.8) !important;
+}
+
+/* Card header gradients */
+.dark .bg-gradient-to-r.from-slate-50.to-white {
+  background-image: linear-gradient(to right, rgb(51 65 85), rgb(30 41 59)) !important;
+}
+
+/* Icon backgrounds */
+.dark .bg-blue-100 { background-color: rgb(30 58 138) !important; }
+.dark .bg-green-100 { background-color: rgb(20 83 45) !important; }
+.dark .bg-purple-100 { background-color: rgb(88 28 135) !important; }
+.dark .bg-emerald-100 { background-color: rgb(6 78 59) !important; }
+.dark .bg-cyan-50 { background-color: rgb(22 78 99) !important; }
+
+/* Checklist items */
+.dark .bg-slate-50.rounded-lg,
+.dark .p-2.bg-slate-50 {
+  background-color: rgb(51 65 85) !important;
+}
+
+/* Shadow adjustments for dark mode */
+.dark .shadow-lg,
+.dark .shadow-xl,
+.dark .shadow-2xl {
+  --tw-shadow-color: rgb(0 0 0 / 0.5);
+}
+
+/* Wave animations for TideWidget */
+@keyframes wave-slow {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes wave-medium {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes wave-fast {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-wave-slow   { animation: wave-slow   40s linear infinite; }
+.animate-wave-medium { animation: wave-medium 28s linear infinite reverse; }
+.animate-wave-fast   { animation: wave-fast   18s linear infinite; }
+
+

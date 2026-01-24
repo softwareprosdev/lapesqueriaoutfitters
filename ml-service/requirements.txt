@@ -1,0 +1,26 @@
+# ML Service Dependencies
+# Install with: pip install -r ml-service/requirements.txt
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+
+# ML/Data Science
+numpy==1.26.3
+pandas==2.1.4
+scikit-learn==1.4.0
+scipy==1.12.0
+
+# Time Series Forecasting
+statsmodels==0.14.1
+prophet==1.1.5
+
+# Optional: Deep Learning (uncomment if needed)
+# tensorflow==2.15.0
+
+# HTTP Client for Node.js integration
+httpx==0.26.0
+
+# Environment
+python-dotenv==1.0.0

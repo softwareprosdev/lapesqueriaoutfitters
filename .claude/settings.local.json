@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npx next build)",
+      "Bash(npm run build:turbo:*)",
+      "Bash(npm install:*)",
+      "Bash(node node_modules/next/dist/bin/next build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(dir:*)",
+      "Bash(git push)",
+      "Bash(git rm:*)",
+      "Bash(ls:*)",
+      "Bash(npm run lint:*)",
+      "Bash(grep:*)",
+      "Bash(git push:*)",
+      "Bash(find:*)",
+      "Bash(openssl rand:*)",
+      "Bash(npm run db:push:*)",
+      "Bash(./node_modules/.bin/prisma db push:*)",
+      "Bash(node --experimental-strip-types -e \"\nconst Redis = require\\(''ioredis''\\);\nconst redis = new Redis\\(process.env.REDIS_URL || ''redis://default:aJBbMi3EmwBOrWvx6I3qNWepeQMDfh7x50mN35PCfTIzr9BT4OD81yDqV3V08DOj@45.63.11.0:5499/0''\\);\n\nredis.on\\(''connect'', \\(\\) => {\n  console.log\\(''Redis connected successfully!''\\);\n  redis.set\\(''test_key'', ''hello_world'', ''EX'', 60\\).then\\(\\(\\) => {\n    return redis.get\\(''test_key''\\);\n  }\\).then\\(\\(val\\) => {\n    console.log\\(''Test value:'', val\\);\n    return redis.del\\(''test_key''\\);\n  }\\).then\\(\\(\\) => {\n    console.log\\(''Test completed successfully!''\\);\n    redis.quit\\(\\);\n  }\\);\n}\\);\n\nredis.on\\(''error'', \\(err\\) => {\n  console.error\\(''Redis error:'', err.message\\);\n  process.exit\\(1\\);\n}\\);\n\")",
+      "Bash(./node_modules/.bin/tsc --noEmit --skipLibCheck src/lib/redis.ts)",
+      "Bash(git -C /home/rogue/Documents/SoftwarePros/lapesqueriaoutfitters status)",
+      "Bash(git -C /home/rogue/Documents/SoftwarePros/lapesqueriaoutfitters log --oneline -5)",
+      "Bash(git -C /home/rogue/Documents/SoftwarePros/lapesqueriaoutfitters show --stat HEAD~0)",
+      "Bash(git -C /home/rogue/Documents/SoftwarePros/lapesqueriaoutfitters ls-files:*)",
+      "Bash(git -C /home/rogue/Documents/SoftwarePros/lapesqueriaoutfitters fetch origin)",
+      "Bash(git -C /home/rogue/Documents/SoftwarePros/lapesqueriaoutfitters log --oneline origin/la-pesqueria-v1 -3)",
+      "Bash(npx tsx:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh auth switch:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh api:*)",
+      "Bash(gh repo create:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}
