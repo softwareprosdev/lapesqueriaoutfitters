@@ -233,8 +233,9 @@ model Order {
 
   status OrderStatus @default(PENDING)
 
-  // Payment
-  stripePaymentId String?
+  // Payment (Clover POS)
+  cloverOrderId   String?
+  cloverPaymentId String?
 
   // Shipping tracking
   trackingNumber String?
@@ -1013,7 +1014,7 @@ model SubscriptionPlan {
   tier          SubscriptionTier @unique
   description   String           @db.Text
   priceMonthly  Float
-  stripePriceId String?          @unique
+  cloverItemGroupId String?      @unique
 
   // Plan benefits
   apparelPerMonth    Int     @default(1)
@@ -1045,9 +1046,9 @@ model Subscription {
 
   status SubscriptionStatus @default(ACTIVE)
 
-  // Stripe integration
-  stripeSubscriptionId String? @unique
-  stripeCustomerId     String?
+  // Clover integration
+  cloverSubscriptionId String? @unique
+  cloverCustomerId     String?
 
   // Billing period
   currentPeriodStart DateTime?
@@ -1356,7 +1357,7 @@ model Return {
   refundAmount   Float?
   refundMethod   String? // original_payment, store_credit
   refundedAt     DateTime?
-  stripeRefundId String?
+  cloverRefundId String?
 
   // Processing
   approvedBy      String?

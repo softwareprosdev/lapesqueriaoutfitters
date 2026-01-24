@@ -114,7 +114,6 @@
     "schema-dts": "^1.1.5",
     "serwist": "^9.5.0",
     "sharp": "^0.34.5",
-    "stripe": "^20.2.0",
     "tailwind-merge": "^3.4.0",
     "three": "^0.182.0",
     "zod": "^4.3.6",
