@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import React from 'react';
 import { RoundedBox, MeshReflectorMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -18,23 +17,10 @@ export function TabletModel({
   scale = 1,
   geometryDetail = 32,
 }: TabletModelProps) {
-  const groupRef = useRef<THREE.Group>(null);
-  const screenGlowRef = useRef<THREE.Mesh>(null);
-
-  // Subtle floating animation
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
-      groupRef.current.rotation.y = rotation[1] + Math.sin(state.clock.elapsedTime * 0.3) * 0.02;
-    }
-    if (screenGlowRef.current) {
-      const material = screenGlowRef.current.material as THREE.MeshBasicMaterial;
-      material.opacity = 0.15 + Math.sin(state.clock.elapsedTime * 2) * 0.05;
-    }
-  });
+  // Static tablet - no animation
 
   return (
-    <group ref={groupRef} position={position} rotation={rotation} scale={scale}>
+    <group position={position} rotation={rotation} scale={scale}>
       {/* Main Tablet Body - Premium Navy with Gold Accents */}
       <RoundedBox
         args={[4.5, 3, 0.15]}
@@ -144,13 +130,13 @@ export function TabletModel({
         />
       </RoundedBox>
 
-      {/* Screen Glow Effect */}
-      <mesh ref={screenGlowRef} position={[0, 0, 0.1]}>
+      {/* Screen Glow Effect - Static */}
+      <mesh position={[0, 0, 0.1]}>
         <planeGeometry args={[4.1, 2.6]} />
         <meshBasicMaterial
           color="#00D4FF"
           transparent
-          opacity={0.15}
+          opacity={0.12}
           blending={THREE.AdditiveBlending}
         />
       </mesh>

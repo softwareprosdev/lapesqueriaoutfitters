@@ -1,21 +1,18 @@
 'use client';
 
-import React, { Suspense, useState, useCallback, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Maximize2, Wifi, WifiOff, Anchor } from 'lucide-react';
 
-import { TabletModel } from './TabletModel';
 import { DashboardScreen } from './DashboardScreen';
 import { useMarineData } from './hooks/useMarineData';
 import { useDeviceCapabilities, useGeolocation } from './hooks/useDeviceCapabilities';
 import type { DashboardTab } from '@/types/marine';
 
-// Loading skeleton for 3D canvas
+// Loading skeleton
 function DashboardSkeleton() {
   return (
-    <div className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl overflow-hidden flex items-center justify-center">
+    <div className="relative w-full h-[600px] md:h-[700px] lg:h-[750px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl overflow-hidden flex items-center justify-center">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent" />
       <motion.div
         animate={{ rotate: 360 }}
@@ -31,7 +28,7 @@ function DashboardSkeleton() {
   );
 }
 
-// Main 3D Dashboard Component
+// Main Dashboard Component - Flat tablet-style display
 export default function FishingDashboard3D() {
   const [activeTab, setActiveTab] = useState<DashboardTab>('yacht-navigation');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -46,7 +43,7 @@ export default function FishingDashboard3D() {
     enableAIS: true,
   });
 
-  const { isMobile, isTablet, hasWebXR, qualitySettings } = useDeviceCapabilities();
+  const { hasWebXR } = useDeviceCapabilities();
 
   // Tab navigation
   const tabs: { id: DashboardTab; label: string; icon: string }[] = [
@@ -89,11 +86,11 @@ export default function FishingDashboard3D() {
 
   return (
     <div className="relative w-full mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8 my-8">
-      {/* Main Dashboard Container */}
+      {/* Main Dashboard Container - Flat Tablet Style */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`
           relative rounded-3xl overflow-hidden
           bg-gradient-to-br from-slate-900 via-[#001233] to-slate-900
@@ -104,10 +101,16 @@ export default function FishingDashboard3D() {
           boxShadow: '0 0 60px rgba(212, 175, 55, 0.15), inset 0 0 30px rgba(0, 212, 255, 0.05)',
         }}
       >
-        {/* Luxury Glow Effects */}
+        {/* Gold corner accents */}
+        <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-gold/50 rounded-tl-3xl" />
+        <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-gold/50 rounded-tr-3xl" />
+        <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-gold/50 rounded-bl-3xl" />
+        <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-gold/50 rounded-br-3xl" />
+
+        {/* Subtle glow effects */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-gold/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl" />
         </div>
 
         {/* Header Bar */}
@@ -215,69 +218,22 @@ export default function FishingDashboard3D() {
           </div>
         </div>
 
-        {/* 3D Canvas + Dashboard Content */}
-        <div className="relative h-[550px] md:h-[650px] lg:h-[700px]">
-          {/* 3D Background Scene */}
-          <div className="absolute inset-0">
-            <Canvas
-              shadows={qualitySettings.shadows}
-              dpr={[1, qualitySettings.pixelRatio]}
-              gl={{
-                antialias: qualitySettings.antialias,
-                alpha: true,
-                powerPreference: 'high-performance',
-              }}
-            >
-              <Suspense fallback={null}>
-                <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
-                <ambientLight intensity={0.4} />
-                <directionalLight
-                  position={[10, 10, 5]}
-                  intensity={1}
-                  castShadow={qualitySettings.shadows}
-                  shadow-mapSize={[1024, 1024]}
-                />
-                <pointLight position={[-10, -10, -5]} intensity={0.3} color="#D4AF37" />
-                <pointLight position={[10, -10, 5]} intensity={0.2} color="#00D4FF" />
+        {/* Dashboard Content Area - Flat Display */}
+        <div className="relative h-[500px] md:h-[600px] lg:h-[650px] bg-gradient-to-b from-slate-900/50 to-slate-900/80">
+          {/* Screen glow effect */}
+          <div className="absolute inset-4 rounded-2xl border border-cyan-500/10 bg-gradient-to-br from-cyan-500/5 to-transparent pointer-events-none" />
 
-                <TabletModel
-                  position={[0, 0, 0]}
-                  rotation={[0.1, 0, 0]}
-                  scale={isMobile ? 0.85 : isTablet ? 0.95 : 1}
-                  geometryDetail={qualitySettings.geometryDetail}
-                />
-
-                <OrbitControls
-                  enableZoom={true}
-                  enablePan={false}
-                  enableRotate={true}
-                  minDistance={5}
-                  maxDistance={15}
-                  minPolarAngle={Math.PI / 4}
-                  maxPolarAngle={Math.PI / 1.5}
-                  minAzimuthAngle={-Math.PI / 4}
-                  maxAzimuthAngle={Math.PI / 4}
-                  rotateSpeed={0.5}
-                  zoomSpeed={0.5}
-                />
-
-                <Environment preset="night" />
-              </Suspense>
-            </Canvas>
-          </div>
-
-          {/* Dashboard Screen Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div
-              className="pointer-events-auto w-[90%] max-w-[900px] h-[85%] bg-slate-900/95 backdrop-blur-md rounded-2xl border border-gold/20 overflow-hidden shadow-2xl"
-              style={{
-                transform: `perspective(1200px) rotateX(5deg)`,
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.1)',
-              }}
-            >
+          {/* Dashboard Screen Content */}
+          <div className="absolute inset-0 p-2 md:p-4">
+            <div className="h-full w-full bg-slate-900/95 backdrop-blur-sm rounded-xl border border-gold/10 overflow-hidden">
               <DashboardScreen activeTab={activeTab} data={data} isLoading={isLoading} />
             </div>
           </div>
+        </div>
+
+        {/* Bottom Bezel - Like a tablet home indicator */}
+        <div className="relative z-10 flex items-center justify-center py-3 bg-gradient-to-r from-slate-900 to-slate-800 border-t border-gold/10">
+          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent rounded-full" />
         </div>
 
         {/* Error/Warning Banner */}
@@ -287,7 +243,7 @@ export default function FishingDashboard3D() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="absolute bottom-4 left-4 right-4 z-20 bg-amber-500/90 text-white px-4 py-3 rounded-xl flex items-center justify-between"
+              className="absolute bottom-16 left-4 right-4 z-20 bg-amber-500/90 text-white px-4 py-3 rounded-xl flex items-center justify-between"
             >
               <span className="text-sm font-medium">
                 {isOffline ? 'Using cached data - Network unavailable' : error}
@@ -331,7 +287,6 @@ export default function FishingDashboard3D() {
                 <button
                   onClick={() => {
                     setShowARPrompt(false);
-                    // AR implementation would go here
                   }}
                   className="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-500 hover:to-pink-500 transition-colors"
                 >
