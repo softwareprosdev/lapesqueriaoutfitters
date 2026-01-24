@@ -56,46 +56,44 @@ export default function Header() {
     setIsMenuOpen(false);
   };
 
-  // Mega menu component
+  // Mega menu component - compact dropdown
   const MegaMenu = ({ isOpen }: { isOpen: boolean }) => (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="absolute top-full left-0 w-screen bg-white shadow-2xl border-t-4 border-teal-600 z-50"
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 4 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+          className="absolute top-full left-0 min-w-[280px] bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50"
         >
-          <div className="max-w-7xl mx-auto p-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              {productCategories.map((category, index) => (
-                <motion.div
-                  key={category.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.3 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+          <div className="py-2">
+            {productCategories.map((category, index) => (
+              <motion.div
+                key={category.name}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.03, duration: 0.15 }}
+              >
+                <Link
+                  href={category.href}
+                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors group"
+                  onClick={() => setIsMegaMenuOpen(false)}
                 >
-                  <Link
-                    href={category.href}
-                    className="group block text-center p-4 rounded-xl hover:bg-gradient-to-br hover:from-teal-50 hover:to-cyan-50 transition-all duration-300 border border-transparent hover:border-teal-200 hover:shadow-lg"
-                    onClick={() => setIsMegaMenuOpen(false)}
-                  >
-                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                      {category.icon}
-                    </div>
-                    <h3 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 text-lg mb-2">
+                  <span className="text-xl group-hover:scale-110 transition-transform">
+                    {category.icon}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-900 group-hover:text-teal-600 transition-colors text-sm">
                       {category.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 group-hover:text-gray-700 transition-colors leading-relaxed">
+                    </div>
+                    <div className="text-xs text-gray-500 truncate">
                       {category.description}
-                    </p>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       )}
@@ -146,26 +144,38 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 xl:space-x-10">
             {navLinks.map((link) => (
-              <div key={link.name} className="relative">
+              <div
+                key={link.name}
+                className="relative"
+                onMouseEnter={() => link.hasMegaMenu && setIsMegaMenuOpen(true)}
+                onMouseLeave={() => link.hasMegaMenu && setIsMegaMenuOpen(false)}
+              >
                 <Link
-                  href={link.hasMegaMenu ? '#' : link.href}
+                  href={link.hasMegaMenu ? '/products' : link.href}
                   className={cn(
-                    "relative py-2 text-gray-700 hover:text-teal-600 transition-colors font-semibold tracking-wide group cursor-pointer",
+                    "relative py-2 text-gray-700 hover:text-teal-600 transition-colors font-semibold tracking-wide group cursor-pointer flex items-center gap-1",
                     pathname === link.href && "text-teal-600"
                   )}
-                  onMouseEnter={() => link.hasMegaMenu && setIsMegaMenuOpen(true)}
-                  onMouseLeave={() => {
-                    // Delay closing to allow mouse movement to mega menu
-                    setTimeout(() => setIsMegaMenuOpen(false), 150);
-                  }}
                   onClick={(e) => {
                     if (link.hasMegaMenu) {
-                      e.preventDefault();
-                      setIsMegaMenuOpen(!isMegaMenuOpen);
+                      // Allow navigation on click, but toggle menu on touch devices
+                      if ('ontouchstart' in window) {
+                        e.preventDefault();
+                        setIsMegaMenuOpen(!isMegaMenuOpen);
+                      }
                     }
                   }}
                 >
                   {link.name}
+                  {link.hasMegaMenu && (
+                    <motion.span
+                      animate={{ rotate: isMegaMenuOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-[10px] opacity-60"
+                    >
+                      ▼
+                    </motion.span>
+                  )}
                   {pathname === link.href && (
                     <motion.div
                       layoutId="nav-underline"
@@ -173,21 +183,8 @@ export default function Header() {
                     />
                   )}
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-                  {link.hasMegaMenu && (
-                    <span className="ml-1 text-xs opacity-70 group-hover:opacity-100 transition-opacity">
-                      ▼
-                    </span>
-                  )}
                 </Link>
-                {link.hasMegaMenu && (
-                  <div
-                    onMouseEnter={() => setIsMegaMenuOpen(true)}
-                    onMouseLeave={() => setIsMegaMenuOpen(false)}
-                    className="absolute top-full left-1/2 transform -translate-x-1/2"
-                  >
-                    <MegaMenu isOpen={isMegaMenuOpen} />
-                  </div>
-                )}
+                {link.hasMegaMenu && <MegaMenu isOpen={isMegaMenuOpen} />}
               </div>
             ))}
           </nav>
