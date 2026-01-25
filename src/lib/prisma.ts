@@ -2,10 +2,11 @@
 // Prevents multiple instances in development (hot reload)
 
 import { PrismaClient } from '@prisma/client';
-import { neonConfig } from '@neondatabase/serverless';
 
-// Configure Neon for serverless environments
-neonConfig.fetchConnectionCache = true;
+// Check if DATABASE_URL is set
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL environment variable is not set!');
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

@@ -1,18 +1,36 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Lock, Anchor } from 'lucide-react'
 
+// Map NextAuth error codes to user-friendly messages
+const errorMessages: Record<string, string> = {
+  Configuration: 'There is a server configuration issue. Please contact support.',
+  AccessDenied: 'Access denied. You do not have permission to access the admin panel.',
+  Verification: 'The verification link has expired or has already been used.',
+  Default: 'An error occurred during authentication. Please try again.',
+  CredentialsSignin: 'Invalid email or password. Please check your credentials.',
+}
+
 export default function AdminLoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  // Handle error from URL parameters (NextAuth redirects with ?error=...)
+  useEffect(() => {
+    const urlError = searchParams.get('error')
+    if (urlError) {
+      setError(errorMessages[urlError] || errorMessages.Default)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
