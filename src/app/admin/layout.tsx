@@ -9,6 +9,8 @@ import { ModeToggle } from '@/components/ModeToggle';
 import { Store, Fish } from 'lucide-react';
 import { headers } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 interface AdminLayoutProps {
   children: React.ReactNode;
 }

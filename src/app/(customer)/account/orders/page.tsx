@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { ArrowLeft, Package } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getOrders(userId: string) {
   const orders = await prisma.order.findMany({
     where: { userId },

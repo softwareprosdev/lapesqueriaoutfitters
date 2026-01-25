@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useCart } from '@/context/CartContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,8 @@ import Link from 'next/link';
 import CartItemImage from '@/components/CartItemImage';
 import CheckoutFeaturedProducts from '@/components/CheckoutFeaturedProducts';
 import { TrustBadges } from '@/components/TrustBadges';
+
+export const dynamic = 'force-dynamic';
 
 // Static USPS shipping rates
 const USPS_SHIPPING_RATES = [
@@ -41,17 +43,7 @@ const USPS_SHIPPING_RATES = [
   },
 ];
 
-// Reserved for discount feature integration
-// interface AppliedDiscount {
-//   id: string;
-//   code: string;
-//   type: string;
-//   value: number;
-//   description: string;
-//   discountAmount: number;
-// }
-
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const { data: session } = useSession();
   const { state: cart, applyDiscount, removeDiscount } = useCart();
   const [loading, setLoading] = useState(false);
@@ -630,5 +622,17 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-teal-400" />
+      </div>
+    }>
+      <CheckoutPageContent />
+    </Suspense>
   );
 }

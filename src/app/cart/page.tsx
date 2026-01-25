@@ -1,10 +1,12 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useCart, PayloadCartItem } from '@/context/CartContext'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import CartUpsells from '@/components/CartUpsells'
 import CartItemImage from '@/components/CartItemImage'
 import { Tag, X, Loader2, Minus, Plus } from 'lucide-react'
@@ -12,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { TrustBadges } from '@/components/TrustBadges'
 
-export default function CartPage() {
+function CartPageContent() {
   const { state, clearCart, updateQuantity, removeItem, applyDiscount, removeDiscount } = useCart();
   const router = useRouter();
   const { data: session } = useSession();
@@ -351,5 +353,17 @@ export default function CartPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-teal-400" />
+      </div>
+    }>
+      <CartPageContent />
+    </Suspense>
   );
 }

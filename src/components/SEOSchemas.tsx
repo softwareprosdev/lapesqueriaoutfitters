@@ -211,24 +211,28 @@ export default function SEOSchemas() {
     <>
       {/* Organization Schema */}
       <script
+        key="org-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
 
       {/* Local Business Schema */}
       <script
+        key="local-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
 
       {/* Website Schema */}
       <script
+        key="website-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
 
       {/* E-commerce Store Schema */}
       <script
+        key="ecommerce-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ecommerceSchema) }}
       />

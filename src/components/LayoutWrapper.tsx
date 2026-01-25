@@ -19,11 +19,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     <>
       {!shouldHideHeaderFooter && <Header />}
       <main className="flex-1 flex flex-col">
-        <AnimatePresence mode="wait" initial={false}>
-          <PageTransition key={pathname}>
+        {/* <AnimatePresence mode="wait" initial={false}>
+          <PageTransition key={pathname}> */}
             {children}
-          </PageTransition>
-        </AnimatePresence>
+        {/* </PageTransition>
+        </AnimatePresence> */}
       </main>
       {!shouldHideHeaderFooter && <Footer />}
       {!shouldHideHeaderFooter && <NewsletterPopup />}
