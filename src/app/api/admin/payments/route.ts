@@ -44,7 +44,7 @@ export async function GET(req: Request) {
         customerEmail: true,
         total: true,
         status: true,
-        stripePaymentId: true,
+        cloverPaymentId: true,
         createdAt: true,
       },
       orderBy: {

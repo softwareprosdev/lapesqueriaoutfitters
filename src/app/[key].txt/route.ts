@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { key: string } }
+  context: { params: Promise<{ key: string }> }
 ) {
+  const params = await context.params;
+  const requestedKey = params.key;
   const key = process.env.INDEXNOW_KEY
 
   if (!key) {
@@ -11,7 +13,7 @@ export async function GET(
   }
 
   // Verify the requested key matches our configured key
-  if (params.key !== key) {
+  if (requestedKey !== key) {
     return new NextResponse('Invalid IndexNow key', { status: 404 })
   }
 

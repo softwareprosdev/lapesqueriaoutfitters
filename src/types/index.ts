@@ -113,7 +113,7 @@ export interface Order {
   shippingCost: number;
   tax: number;
   total: number;
-  stripePaymentIntentId: string | null;
+  cloverPaymentId: string | null;
   trackingNumber: string | null;
   carrier: string | null;
   estimatedDelivery: Date | null;

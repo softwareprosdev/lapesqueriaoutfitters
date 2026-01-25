@@ -39,7 +39,8 @@
       "Bash(npm uninstall:*)",
       "Bash(git checkout:*)",
       "Bash(git branch:*)",
-      "WebFetch(domain:docs.clover.com)"
+      "WebFetch(domain:docs.clover.com)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

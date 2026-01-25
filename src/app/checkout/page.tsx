@@ -205,7 +205,7 @@ export default function CheckoutPage() {
 
       const { url } = await response.json();
 
-      // Redirect to Stripe Checkout
+      
       if (url) {
         window.location.href = url;
       }

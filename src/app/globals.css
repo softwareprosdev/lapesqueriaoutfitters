@@ -154,70 +154,40 @@
 }
 
 /* ========================================
-   DARK MODE - Admin Panel Only
-   Applied via .dark class on admin routes
+   DARK MODE - DISABLED (Forced Light Mode)
    ==================================== */
 .dark {
-  --background: oklch(0.08 0.012 250);
-  --foreground: oklch(0.98 0.003 250);
+  --background: #F8FAFC;
+  --foreground: #001F3F;
   
-  --card: oklch(0.12 0.015 250);
-  --card-foreground: oklch(0.98 0.003 250);
+  --card: #FFFFFF;
+  --card-foreground: #001F3F;
   
-  --popover: oklch(0.12 0.015 250);
-  --popover-foreground: oklch(0.98 0.003 250);
+  --popover: #FFFFFF;
+  --popover-foreground: #001F3F;
   
-  --primary: oklch(0.53 0.16 190);
-  --primary-foreground: oklch(0.99 0 0);
-  --primary-hover: oklch(0.6 0.15 190);
+  --primary: #001F3F;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #002D5C;
   
-  --secondary: oklch(0.18 0.025 250);
-  --secondary-foreground: oklch(0.9 0.02 250);
+  --secondary: #494949;
+  --secondary-foreground: #FFFFFF;
   
-  --muted: oklch(0.18 0.025 250);
-  --muted-foreground: oklch(0.65 0.03 250);
-  --text-secondary: oklch(0.75 0.03 250);
+  --muted: #F1F5F9;
+  --muted-foreground: #494949;
+  --text-secondary: #494949;
   
-  --accent: oklch(0.18 0.04 190);
-  --accent-foreground: oklch(0.9 0.03 190);
+  --accent: #FF4500;
+  --accent-foreground: #FFFFFF;
   
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.48 0.22 145);
-  --success-foreground: oklch(0.99 0 0);
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --success: #2D5A27;
+  --success-foreground: #FFFFFF;
   
-  --border: oklch(0.25 0.025 250);
-  --input: oklch(0.25 0.025 250);
-  --ring: oklch(0.55 0.14 190);
-  
-  --chart-1: oklch(0.49 0.24 265);
-  --chart-2: oklch(0.7 0.17 162);
-  --chart-3: oklch(0.77 0.19 70);
-  --chart-4: oklch(0.63 0.27 304);
-  --chart-5: oklch(0.65 0.25 16);
-  
-  --sidebar: oklch(0.08 0.012 250);
-  --sidebar-foreground: oklch(0.98 0.003 250);
-  --sidebar-primary: oklch(0.53 0.16 190);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.18 0.035 190);
-  --sidebar-accent-foreground: oklch(0.9 0.03 190);
-  --sidebar-border: oklch(0.25 0.025 250);
-  --sidebar-ring: oklch(0.55 0.14 190);
-
-  /* Admin dark mode overrides for all elements */
-  --background-primary: #0f1419;
-  --background-secondary: #1a1f2e;
-  --background-tertiary: #242b3d;
-  --background-elevated: #2a3245;
-  --text-primary: #f0f4f8;
-  --text-secondary: #a0aec0;
-  --text-muted: #718096;
-  
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.3);
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #FF4500;
 }
 
 @theme inline {
@@ -324,66 +294,66 @@
 
 
 @layer base {
-  /* Force dark mode for admin section */
+  /* Force light mode for admin section */
   .admin-dark {
-    --background: oklch(0.06 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.12 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.12 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.488 0.243 264.376);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.2 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.2 0 0);
-    --muted-foreground: oklch(0.7 0 0);
-    --accent: oklch(0.2 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.6 0.2 25);
-    --border: oklch(0.2 0 0);
-    --input: oklch(0.2 0 0);
-    --ring: oklch(0.8 0 0);
+    --background: #F8FAFC;
+    --foreground: #001F3F;
+    --card: #FFFFFF;
+    --card-foreground: #001F3F;
+    --popover: #FFFFFF;
+    --popover-foreground: #001F3F;
+    --primary: #001F3F;
+    --primary-foreground: #FFFFFF;
+    --secondary: #494949;
+    --secondary-foreground: #FFFFFF;
+    --muted: #F1F5F9;
+    --muted-foreground: #494949;
+    --accent: #FF4500;
+    --accent-foreground: #FFFFFF;
+    --destructive: #DC2626;
+    --border: #E2E8F0;
+    --input: #E2E8F0;
+    --ring: #FF4500;
   }
 
-  /* Admin dark mode overrides for all elements */
+  /* Admin dark mode overrides disabled */
   .admin-dark,
   .admin-dark body,
   .admin-dark .bg-white,
   .admin-dark .bg-gray-50,
   .admin-dark .bg-gray-100,
   .admin-dark .bg-gray-200 {
-    background-color: oklch(0.06 0 0) !important;
+    background-color: #F8FAFC !important;
   }
 
   .admin-dark .text-gray-900,
   .admin-dark .text-gray-800,
   .admin-dark .text-gray-700,
   .admin-dark .text-gray-600 {
-    color: oklch(0.985 0 0) !important;
+    color: #001F3F !important;
   }
 
   .admin-dark .text-gray-500,
   .admin-dark .text-gray-400 {
-    color: oklch(0.7 0 0) !important;
+    color: #494949 !important;
   }
 
   .admin-dark .border,
   .admin-dark .border-gray-200,
   .admin-dark .border-gray-300 {
-    border-color: oklch(0.2 0 0) !important;
+    border-color: #E2E8F0 !important;
   }
 
-  /* Table fixes for admin dark mode */
+  /* Table fixes for forced light mode */
   .admin-dark table,
   .admin-dark thead,
   .admin-dark tbody,
   .admin-dark tr,
   .admin-dark td,
   .admin-dark th {
-    background-color: oklch(0.12 0 0) !important;
-    color: oklch(0.985 0 0) !important;
-    border-color: oklch(0.2 0 0) !important;
+    background-color: #FFFFFF !important;
+    color: #001F3F !important;
+    border-color: #E2E8F0 !important;
   }
 
   .admin-dark thead,
@@ -677,82 +647,52 @@ body:has(.admin-section) {
 
 /* These utilities automatically apply dark mode to common admin patterns */
 
-/* Admin page backgrounds */
+/* Admin page backgrounds - Forced light */
 .dark .admin-page,
 .dark [data-admin-page] {
   --tw-bg-opacity: 1;
-  background-color: rgb(15 23 42 / var(--tw-bg-opacity)); /* slate-900 */
+  background-color: #F8FAFC;
 }
 
-/* Common light backgrounds that need dark variants */
+/* Common light backgrounds - Forced light */
 .dark .bg-white {
-  background-color: rgb(30 41 59) !important; /* slate-800 */
+  background-color: #FFFFFF !important;
 }
 
 .dark .bg-gray-50,
 .dark .bg-slate-50 {
-  background-color: rgb(51 65 85) !important; /* slate-700 */
+  background-color: #F8FAFC !important;
 }
 
 .dark .bg-gray-100,
 .dark .bg-slate-100 {
-  background-color: rgb(71 85 105) !important; /* slate-600 */
+  background-color: #F1F5F9 !important;
 }
 
-.dark .bg-gray-50,
-.dark .bg-slate-50 {
-  background-color: rgb(51 65 85) !important; /* slate-700 */
-}
-
-.dark .bg-gray-100,
-.dark .bg-slate-100 {
-  background-color: rgb(71 85 105) !important; /* slate-600 */
-}
-
-/* Common text colors */
+/* Common text colors - Forced dark navy for visibility */
 .dark .text-gray-900,
 .dark .text-slate-900 {
-  color: rgb(248 250 252) !important; /* slate-50 */
+  color: #001F3F !important;
 }
 
 .dark .text-gray-800,
 .dark .text-slate-800 {
-  color: rgb(241 245 249) !important; /* slate-100 */
+  color: #001F3F !important;
 }
 
 .dark .text-gray-700,
 .dark .text-slate-700 {
-  color: rgb(226 232 240) !important; /* slate-200 */
+  color: #494949 !important;
 }
 
 .dark .text-gray-600,
 .dark .text-slate-600 {
-  color: rgb(203 213 225) !important; /* slate-300 */
+  color: #494949 !important;
 }
 
 .dark .text-gray-500,
 .dark .text-slate-500 {
-  color: rgb(148 163 184) !important; /* slate-400 */
-}
-
-.dark .text-gray-800,
-.dark .text-slate-800 {
-  color: rgb(241 245 249) !important; /* slate-100 */
-}
-
-.dark .text-gray-700,
-.dark .text-slate-700 {
-  color: rgb(226 232 240) !important; /* slate-200 */
-}
-
-.dark .text-gray-600,
-.dark .text-slate-600 {
-  color: rgb(203 213 225) !important; /* slate-300 */
-}
-
-.dark .text-gray-500,
-.dark .text-slate-500 {
-  color: rgb(148 163 184) !important; /* slate-400 */
+  color: #494949 !important;
 }
 
 /* Common border colors */

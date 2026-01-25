@@ -11,7 +11,6 @@ import type { CombinedMarineData } from '@/types/marine';
 // Create XR store for session management
 const xrStore = createXRStore({
   depthSensing: true,
-  optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking', 'hit-test'],
 });
 
 interface AROverlayProps {

@@ -60,7 +60,7 @@ interface OrderData {
   shippingState: string;
   shippingZip: string;
   shippingCountry: string;
-  stripePaymentId?: string | null;
+  cloverPaymentId?: string | null;
   trackingNumber?: string | null;
   carrier?: string | null;
   createdAt: string;
@@ -460,28 +460,28 @@ export default function OrderDetailPage() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">Amount Paid</p>
                   <p className="text-xl font-bold text-gray-900 dark:text-white">${order.total.toFixed(2)}</p>
                 </div>
-                {order.stripePaymentId && (
+                {order.cloverPaymentId && (
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Stripe Payment ID</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Clover Payment ID</p>
                     <div className="flex items-center gap-2">
                       <code className="text-xs bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded font-mono text-gray-700 dark:text-gray-300 break-all">
-                        {order.stripePaymentId}
+                        {order.cloverPaymentId}
                       </code>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => copyToClipboard(order.stripePaymentId!, 'Payment ID')}
+                        onClick={() => copyToClipboard(order.cloverPaymentId!, 'Payment ID')}
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
                     </div>
                     <a
-                      href={`https://dashboard.stripe.com/payments/${order.stripePaymentId}`}
+                      href={`https://clover.com/dashboard/transactions/${order.cloverPaymentId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 mt-1"
                     >
-                      View in Stripe <ExternalLink className="h-3 w-3" />
+                      View in Clover <ExternalLink className="h-3 w-3" />
                     </a>
                   </div>
                 )}

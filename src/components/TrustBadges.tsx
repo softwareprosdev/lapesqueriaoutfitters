@@ -46,9 +46,9 @@ export function TrustBadges({ showCashApp = true, showApplePay = true }: TrustBa
           )}
         </div>
 
-        {/* Stripe Badge */}
+        {}
         <div className="text-[10px] text-slate-500">
-          Powered by <span className="font-semibold">Stripe</span>
+          Powered by <span className="font-semibold">Clover POS</span>
         </div>
       </div>
 

@@ -17,7 +17,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { Box } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
+import { SxProps } from '@mui/joy/styles/types';
 import { CHART_NEON_COLORS } from '@/lib/theme/joyTheme';
 
 interface ChartContainerProps {
@@ -234,19 +235,21 @@ export function NeonPieChart({
 }
 
 export function ChartContainer({ title, children, height = 300 }: ChartContainerProps) {
+  const containerSx: SxProps = {
+    backgroundColor: 'background.level1',
+    borderRadius: '12px',
+    border: '1px solid rgba(148,163,184,0.2)',
+    p: 2.5,
+  };
+
   return (
-    <Box
-      sx={{
-        backgroundColor: 'background.level1',
-        borderRadius: '12px',
-        border: '1px solid rgba(148,163,184,0.2)',
-        padding: '20px',
-      }}
-    >
+    // @ts-ignore - MUI sx union type is too complex for TS to represent here
+    <Box sx={containerSx}>
       {title && (
-        <Box sx={{ marginBottom: '16px' }}>
+        <Box sx={{ marginBottom: '16px' } as any}>
           <Box
             component="h3"
+            // @ts-ignore
             sx={{
               margin: 0,
               fontSize: '1rem',
@@ -258,7 +261,7 @@ export function ChartContainer({ title, children, height = 300 }: ChartContainer
           </Box>
         </Box>
       )}
-      <Box sx={{ height }}>{children}</Box>
+      <Box sx={{ height } as any}>{children}</Box>
     </Box>
   );
 }

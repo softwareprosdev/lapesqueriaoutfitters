@@ -236,7 +236,7 @@ export default function DataCleanupPage() {
       total: number;
       status: string;
       createdAt: string;
-      stripePaymentId?: string;
+      cloverPaymentId?: string;
       items?: { id: string }[];
       flags?: DataFlags & {
         hasRealPayment: boolean;

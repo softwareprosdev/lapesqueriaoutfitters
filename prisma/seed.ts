@@ -1,13 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import Stripe from 'stripe'
 
 const prisma = new PrismaClient()
-
-// Initialize Stripe if configured
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2025-12-15.clover' })
-  : null
 
 async function main() {
   console.log('🌱 Production Seeding - Setting up essential data...')
@@ -224,14 +218,16 @@ async function main() {
   console.log(`✅ Discount codes ready\n`)
 
   // ===========================
-  // IMPORT STRIPE ORDERS
+  // IMPORT STRIPE ORDERS (DISABLED - Schema uses Clover)
   // ===========================
+  /*
   if (stripe) {
     console.log('💳 Importing historical Stripe orders...')
     await importStripeOrders()
   } else {
     console.log('⚠️  Skipping Stripe order import (STRIPE_SECRET_KEY not configured)')
   }
+  */
 
   console.log('═══════════════════════════════════════════════════════════════')
   console.log('🎉 PRODUCTION SEEDING COMPLETED!')
@@ -240,138 +236,17 @@ async function main() {
 
 /**
  * Import historical orders from Stripe
+ * (DISABLED - Schema uses Clover)
  */
+/*
 async function importStripeOrders() {
-  if (!stripe) return
-
-  const DAYS_TO_SYNC = 365 // Fetch up to 1 year of orders
-  const startDate = Math.floor(Date.now() / 1000) - (DAYS_TO_SYNC * 24 * 60 * 60)
-
-  let imported = 0
-  let skipped = 0
-  let hasMore = true
-  let startingAfter: string | undefined
-
-  try {
-    // Fetch all completed checkout sessions (paginated)
-    while (hasMore) {
-      const sessions = await stripe.checkout.sessions.list({
-        limit: 100,
-        created: { gte: startDate },
-        status: 'complete',
-        starting_after: startingAfter,
-      })
-
-      for (const session of sessions.data) {
-        const paymentIntentId = session.payment_intent as string
-
-        // Check if order already exists
-        const existingOrder = await prisma.order.findFirst({
-          where: {
-            OR: [
-              { stripePaymentId: paymentIntentId },
-              { stripePaymentId: session.id },
-            ],
-          },
-        })
-
-        if (existingOrder) {
-          skipped++
-          continue
-        }
-
-        // Import this order
-        try {
-          await importSingleOrder(session)
-          imported++
-        } catch (error) {
-          console.error(`   ❌ Failed to import ${session.id}:`, error instanceof Error ? error.message : error)
-        }
-      }
-
-      hasMore = sessions.has_more
-      if (sessions.data.length > 0) {
-        startingAfter = sessions.data[sessions.data.length - 1].id
-      }
-    }
-
-    console.log(`   ✅ Imported ${imported} new orders (${skipped} already existed)`)
-  } catch (error) {
-    console.error('   ❌ Error importing Stripe orders:', error)
-  }
+  ...
 }
 
 async function importSingleOrder(session: Stripe.Checkout.Session) {
-  const customerEmail = session.customer_email || session.customer_details?.email || ''
-  const customerName = session.customer_details?.name || session.shipping_details?.name || session.metadata?.shippingName || 'Guest'
-
-  // Try multiple sources for shipping address
-  const shipping = session.shipping_details?.address || session.customer_details?.address
-  const metadata = session.metadata || {}
-
-  // Build address from best available source
-  const shippingLine1 = shipping?.line1 || metadata.shippingLine1 || ''
-  const shippingLine2 = shipping?.line2 || metadata.shippingLine2 || ''
-  const shippingCity = shipping?.city || metadata.shippingCity || ''
-  const shippingState = shipping?.state || metadata.shippingState || ''
-  const shippingZip = shipping?.postal_code || metadata.shippingPostalCode || ''
-  const shippingCountry = shipping?.country || metadata.shippingCountry || 'US'
-
-  const total = (session.amount_total || 0) / 100
-  const subtotal = (session.amount_subtotal || session.amount_total || 0) / 100
-
-  // Estimate tax and shipping
-  let tax = 0
-  let shippingCost = 0
-
-  try {
-    const lineItems = await stripe!.checkout.sessions.listLineItems(session.id, { limit: 100 })
-    for (const item of lineItems.data) {
-      if (item.description?.toLowerCase().includes('tax')) {
-        tax = (item.amount_total || 0) / 100
-      } else if (item.description?.toLowerCase().includes('shipping')) {
-        shippingCost = (item.amount_total || 0) / 100
-      }
-    }
-  } catch {
-    // Estimate if we can't get line items
-    tax = subtotal * 0.0825
-    if (total < 50) shippingCost = 5.95
-  }
-
-  const productSubtotal = total - tax - shippingCost
-
-  // Create the order
-  const order = await prisma.order.create({
-    data: {
-      customerEmail,
-      customerName,
-      status: 'PENDING',
-      subtotal: productSubtotal > 0 ? productSubtotal : subtotal,
-      shipping: shippingCost,
-      tax,
-      total,
-      stripePaymentId: session.payment_intent as string || session.id,
-      shippingAddress: shippingLine1 + (shippingLine2 ? '\n' + shippingLine2 : ''),
-      shippingCity,
-      shippingState,
-      shippingZip,
-      shippingCountry,
-      createdAt: new Date(session.created * 1000),
-    },
-  })
-
-  // Create conservation donation record
-  await prisma.conservationDonation.create({
-    data: {
-      orderId: order.id,
-      amount: productSubtotal * 0.10,
-      percentage: 10.0,
-      status: 'PLEDGED',
-      region: 'South Padre Island',
-    },
-  })
+  ...
 }
+*/
 
 main()
   .catch((e) => {

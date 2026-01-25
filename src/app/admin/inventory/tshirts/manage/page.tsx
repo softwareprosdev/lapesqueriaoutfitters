@@ -97,6 +97,7 @@ export default function TShirtInventoryManagementPage() {
   const [colorForm, setColorForm] = useState({ name: '', hexCode: '#000000', isActive: true, displayOrder: 0 });
   const [sizeForm, setSizeForm] = useState({ name: '', label: '', chestWidth: '', length: '', isActive: true, displayOrder: 0 });
   const [adjustmentForm, setAdjustmentForm] = useState({ type: 'add' as 'add' | 'set' | 'subtract', quantity: 0, reason: '' });
+  const [inventoryForm, setInventoryForm] = useState({ productId: '', colorId: '', sizeId: '', stock: 0, price: 0, sku: '', reorderPoint: 10, safetyStock: 5 });
 
   // Fetch all data
   const fetchData = useCallback(async (silent = false) => {
@@ -270,10 +271,14 @@ export default function TShirtInventoryManagementPage() {
             reorderPoint: editingInventory.reorderPoint,
             safetyStock: editingInventory.safetyStock
           } : {
-            colorId: editingInventory?.colorId,
-            sizeId: editingInventory?.sizeId,
-            stock: editingInventory?.stock || 0,
-            price: editingInventory?.price || 0
+            productId: inventoryForm.productId,
+            colorId: inventoryForm.colorId,
+            sizeId: inventoryForm.sizeId,
+            stock: inventoryForm.stock || 0,
+            price: inventoryForm.price || 0,
+            sku: inventoryForm.sku,
+            reorderPoint: inventoryForm.reorderPoint,
+            safetyStock: inventoryForm.safetyStock
           }
         })
       });

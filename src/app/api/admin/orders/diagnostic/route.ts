@@ -31,7 +31,7 @@ export async function GET() {
 
     // Check for any webhook-related issues
     const webhookCheck = {
-      stripeWebhookSecretConfigured: !!process.env.STRIPE_WEBHOOK_SECRET,
+      cloverWebhookSecretConfigured: !!process.env.CLOVER_WEBHOOK_SECRET,
       databaseConnected: true,
     };
 
@@ -41,7 +41,7 @@ export async function GET() {
       recentOrders,
       webhookCheck,
       message: orderCount === 0 
-        ? 'No orders found in database. Orders may not be getting created by the Stripe webhook.'
+        ? 'No orders found in database. Orders may not be getting created by the Clover webhook.'
         : `Found ${orderCount} orders in database.`,
     });
   } catch (error) {

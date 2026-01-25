@@ -73,14 +73,12 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/screenshots/dashboard-wide.png',
         sizes: '1280x720',
         type: 'image/png',
-        // @ts-expect-error - form_factor is valid but not in types yet
         form_factor: 'wide',
       },
       {
         src: '/screenshots/dashboard-narrow.png',
         sizes: '750x1334',
         type: 'image/png',
-        // @ts-expect-error - form_factor is valid but not in types yet
         form_factor: 'narrow',
       },
     ],

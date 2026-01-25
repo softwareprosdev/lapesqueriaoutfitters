@@ -62,16 +62,16 @@ async function main() {
     where: { id: 'default' },
     update: {
       siteName: 'La Pesqueria Outfitters',
-      contactEmail: 'info@lapesqueria.com',
-      contactPhone: '(956) 555-0123',
+      email: 'info@lapesqueria.com',
+      phone: '(956) 555-0123',
       address: '4400 N 23rd St Suite 135, McAllen, TX 78504',
       updatedAt: new Date(),
     },
     create: {
       id: 'default',
       siteName: 'La Pesqueria Outfitters',
-      contactEmail: 'info@lapesqueria.com',
-      contactPhone: '(956) 555-0123',
+      email: 'info@lapesqueria.com',
+      phone: '(956) 555-0123',
       address: '4400 N 23rd St Suite 135, McAllen, TX 78504',
     },
   });

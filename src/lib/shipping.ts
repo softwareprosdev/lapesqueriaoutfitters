@@ -1,20 +1,4 @@
-import Stripe from 'stripe';
 
-// Lazy initialize Stripe to avoid build-time errors when env var is missing
-let _stripe: Stripe | null = null;
-
-export function getStripe(): Stripe {
-  if (!_stripe) {
-    const apiKey = process.env.STRIPE_SECRET_KEY;
-    if (!apiKey) {
-      throw new Error('STRIPE_SECRET_KEY environment variable is required');
-    }
-    _stripe = new Stripe(apiKey, {
-      apiVersion: '2025-12-15.clover',
-    });
-  }
-  return _stripe;
-}
 
 // Shipping rate configurations
 export interface ShippingRate {
@@ -28,7 +12,7 @@ export interface ShippingRate {
   type: 'standard' | 'express' | 'free';
 }
 
-// Static shipping rates (can be managed via Stripe Dashboard for dynamic rates)
+
 export const SHIPPING_RATES: ShippingRate[] = [
   {
     id: 'shr_standard',
@@ -74,29 +58,19 @@ export function getAvailableShippingRates(subtotalCents: number): ShippingRate[]
   return rates;
 }
 
-// Calculate shipping for checkout session
-export function getShippingOptionsForStripe(subtotalCents: number): Stripe.Checkout.SessionCreateParams.ShippingOption[] {
+
+export function getShippingOptionsForClover(subtotalCents: number) {
   const availableRates = getAvailableShippingRates(subtotalCents);
 
   return availableRates.map(rate => ({
-    shipping_rate_data: {
-      type: 'fixed_amount' as const,
-      fixed_amount: {
-        amount: rate.amount,
-        currency: rate.currency,
-      },
-      display_name: rate.name,
-      delivery_estimate: {
-        minimum: {
-          unit: 'business_day' as const,
-          value: rate.estimatedDays,
-        },
-        maximum: {
-          unit: 'business_day' as const,
-          value: rate.estimatedDays + 2,
-        },
-      },
-    },
+    id: rate.id,
+    name: rate.name,
+    description: rate.description,
+    amount: rate.amount,
+    currency: rate.currency,
+    estimatedDays: rate.estimatedDays,
+    durationTerms: rate.durationTerms,
+    type: rate.type,
   }));
 }
 

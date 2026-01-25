@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getMockTshirtData } from '@/lib/mock-data';
 
 export async function GET(req: Request) {
   try {
@@ -36,9 +37,9 @@ export async function GET(req: Request) {
         tshirts: mockTshirts,
         summary: {
           totalTshirts: mockTshirts.length,
-          totalStock: mockTshirts.reduce((sum, t) => sum + t.analytics.totalStock, 0),
-          totalValue: mockTshirts.reduce((sum, t) => sum + t.analytics.totalValue, 0),
-          avgPricePerShirt: mockTshirts.reduce((sum, t) => sum + t.analytics.avgPrice, 0) / mockTshirts.length
+          totalStock: mockTshirts.reduce((sum: number, t: any) => sum + t.analytics.totalStock, 0),
+          totalValue: mockTshirts.reduce((sum: number, t: any) => sum + t.analytics.totalValue, 0),
+          avgPricePerShirt: mockTshirts.reduce((sum: number, t: any) => sum + t.analytics.avgPrice, 0) / mockTshirts.length
         },
         _isMockData: true
       });
@@ -183,9 +184,9 @@ export async function GET(req: Request) {
       tshirts: tshirtsWithAnalytics,
       summary: {
         totalTshirts: tshirtsWithAnalytics.length,
-        totalStock: tshirtsWithAnalytics.reduce((sum, t) => sum + t.analytics.totalStock, 0),
-        totalValue: tshirtsWithAnalytics.reduce((sum, t) => sum + t.analytics.totalValue, 0),
-        avgPricePerShirt: tshirtsWithAnalytics.reduce((sum, t) => sum + t.analytics.avgPrice, 0) / tshirtsWithAnalytics.length
+        totalStock: tshirtsWithAnalytics.reduce((sum: number, t: any) => sum + t.analytics.totalStock, 0),
+        totalValue: tshirtsWithAnalytics.reduce((sum: number, t: any) => sum + t.analytics.totalValue, 0),
+        avgPricePerShirt: tshirtsWithAnalytics.reduce((sum: number, t: any) => sum + t.analytics.avgPrice, 0) / tshirtsWithAnalytics.length
       }
     });
 

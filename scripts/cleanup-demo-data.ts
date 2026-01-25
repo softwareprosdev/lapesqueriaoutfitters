@@ -38,7 +38,7 @@ async function cleanupDemoData() {
   try {
     // 1. Delete demo reviews
     console.log('📝 Deleting demo reviews...');
-    const deletedReviews = await prisma.review.deleteMany({
+    const deletedReviews = await prisma.productReview.deleteMany({
       where: {
         customerName: { in: DEMO_REVIEWER_NAMES }
       }
@@ -129,7 +129,7 @@ async function cleanupDemoData() {
     // Show remaining counts
     console.log('📈 Remaining data summary:');
     const [reviews, orders, products, variants] = await Promise.all([
-      prisma.review.count(),
+      prisma.productReview.count(),
       prisma.order.count(),
       prisma.product.count(),
       prisma.productVariant.count(),

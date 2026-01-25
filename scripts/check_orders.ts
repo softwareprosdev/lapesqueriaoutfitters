@@ -20,14 +20,14 @@ async function main() {
     if (totalOrders === 0) {
       console.log('\n❌ No orders found in database!');
       console.log('\nPossible reasons:');
-      console.log('1. Webhook secret is incorrect/placeholder');
-      console.log('2. Webhook endpoint not configured in Stripe Dashboard');
-      console.log('3. Webhooks are failing but orders are being processed in Stripe');
+      console.log('1. Clover integration not configured');
+      console.log('2. Webhooks not reaching the server');
+      console.log('3. Orders being processed in Clover POS but not syncing');
       console.log('4. Application wasn\'t running when purchases were made');
       console.log('\nNext steps:');
-      console.log('- Check Stripe Dashboard → Developers → Webhooks for failed delivery attempts');
-      console.log('- Verify STRIPE_WEBHOOK_SECRET in .env is your actual secret (not placeholder)');
-      console.log('- Check your application logs for webhook errors');
+      console.log('- Check Clover Developer Dashboard for webhook health');
+      console.log('- Verify CLOVER_MERCHANT_ID and CLOVER_ACCESS_TOKEN in .env');
+      console.log('- Check your application logs for Clover sync errors');
       return;
     }
 
@@ -92,7 +92,7 @@ async function main() {
     // Check for orders with payment intent
     const withPayment = await prisma.order.count({
       where: {
-        stripePaymentId: {
+        cloverPaymentId: {
           not: null
         }
       }
@@ -100,35 +100,18 @@ async function main() {
 
     const withoutPayment = await prisma.order.count({
       where: {
-        stripePaymentId: null
+        cloverPaymentId: null
       }
     });
 
     console.log('\n💳 Payment tracking:');
-    console.log(`   With Stripe Payment ID: ${withPayment}`);
-    console.log(`   Without Stripe Payment ID: ${withoutPayment}`);
+    console.log(`   With Clover Payment ID: ${withPayment}`);
+    console.log(`   Without Clover Payment ID: ${withoutPayment}`);
 
     // Check environment configuration
     console.log('\n⚙️  Configuration check:');
-    console.log(`   STRIPE_WEBHOOK_SECRET: ${process.env.STRIPE_WEBHOOK_SECRET ? 
-      (process.env.STRIPE_WEBHOOK_SECRET === 'whsec_your_webhook_signing_secret' ? 
-        '❌ PLACEHOLDER VALUE - UPDATE THIS!' : 
-        '✅ Set (starts with ' + process.env.STRIPE_WEBHOOK_SECRET.slice(0, 10) + '...)'
-      ) : 
-      '❌ NOT SET'
-    }`);
-
-    if (process.env.STRIPE_WEBHOOK_SECRET === 'whsec_your_webhook_signing_secret') {
-      console.log('\n⚠️  WARNING: Your STRIPE_WEBHOOK_SECRET is still the placeholder value!');
-      console.log('   This means webhooks will FAIL signature verification.');
-      console.log('\n   To fix:');
-      console.log('   1. Go to Stripe Dashboard → Developers → Webhooks');
-      console.log('   2. Click on your webhook endpoint');
-      console.log('   3. Click "Reveal" on the Signing secret');
-      console.log('   4. Copy the value (starts with whsec_...)');
-      console.log('   5. Update STRIPE_WEBHOOK_SECRET in your .env file');
-      console.log('   6. Restart your application');
-    }
+    console.log(`   CLOVER_MERCHANT_ID: ${process.env.CLOVER_MERCHANT_ID ? '✅ Set' : '❌ NOT SET'}`);
+    console.log(`   CLOVER_ACCESS_TOKEN: ${process.env.CLOVER_ACCESS_TOKEN ? '✅ Set' : '❌ NOT SET'}`);
 
   } catch (error) {
     console.error('\n❌ Error checking orders:', error);

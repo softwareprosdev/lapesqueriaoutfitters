@@ -8,7 +8,7 @@ interface CreateOrderParams {
   shipping: number;
   tax: number;
   total: number;
-  stripePaymentIntentId?: string;
+  cloverPaymentId?: string;
   customerEmail: string;
   shippingAddress: {
     name: string;
@@ -29,7 +29,7 @@ export async function createOrder(params: CreateOrderParams) {
     shipping,
     tax,
     total,
-    stripePaymentIntentId,
+cloverPaymentId,
     customerEmail,
     shippingAddress,
   } = params;
@@ -50,7 +50,7 @@ export async function createOrder(params: CreateOrderParams) {
       shipping,
       tax,
       total,
-      stripePaymentId: stripePaymentIntentId,
+      cloverPaymentId: cloverPaymentId,
       customerName: shippingAddress.name,
       shippingAddress: `${shippingAddress.line1}${shippingAddress.line2 ? '\n' + shippingAddress.line2 : ''}`,
       shippingCity: shippingAddress.city,

@@ -139,7 +139,7 @@ export async function GET(
         shippingState: order.shippingState,
         shippingZip: order.shippingZip,
         shippingCountry: order.shippingCountry,
-        stripePaymentId: order.stripePaymentId,
+        cloverPaymentId: order.cloverPaymentId,
         trackingNumber: order.trackingNumber,
         carrier: order.carrier,
         createdAt: order.createdAt,

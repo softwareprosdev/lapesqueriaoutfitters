@@ -16,7 +16,7 @@ async function convertAvifToJpg() {
     console.log(`   Input:  ${inputPath}`);
     console.log(`   Output: ${outputPath}`);
   } catch (error) {
-    console.error('❌ Conversion failed:', error.message);
+    console.error('❌ Conversion failed:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 }

@@ -13,7 +13,7 @@ interface Payment {
   customerEmail: string;
   orderNumber: string;
   total: number;
-  stripePaymentId?: string;
+  cloverPaymentId?: string;
   createdAt: Date;
 }
 
@@ -206,7 +206,7 @@ export default function PaymentsPage() {
                       </td>
                       <td className="py-4 font-bold">${payment.total.toFixed(2)}</td>
                       <td className="py-4 font-mono text-xs text-gray-600">
-                        {payment.stripePaymentId?.slice(0, 20)}...
+                        {payment.cloverPaymentId?.slice(0, 20)}...
                       </td>
                       <td className="py-4">
                         <span

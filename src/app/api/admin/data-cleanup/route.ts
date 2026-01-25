@@ -40,7 +40,7 @@ export async function GET(req: Request) {
       const ordersWithFlags = orders.map((order) => ({
         ...order,
         flags: {
-          hasRealPayment: !!order.stripePaymentId && !order.stripePaymentId.startsWith('test_'),
+          hasRealPayment: !!order.cloverPaymentId && !order.cloverPaymentId.startsWith('test_'),
           hasValidEmail: !order.customerEmail.includes('test') &&
                          !order.customerEmail.includes('example') &&
                          !order.customerEmail.includes('fake'),

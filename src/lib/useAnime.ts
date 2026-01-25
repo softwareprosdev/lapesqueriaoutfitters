@@ -1,15 +1,15 @@
 'use client'
 
 import { useEffect, useRef, RefObject } from 'react'
-import { animate, stagger } from 'animejs'
+import anime from 'animejs'
 
-export interface AnimeParams {
+export interface AnimeParams extends anime.AnimeParams {
   opacity?: number[]
   translateY?: number[]
   translateX?: number[]
   scale?: number[]
   duration?: number
-  delay?: number | ReturnType<typeof stagger>
+  delay?: number | any
   ease?: string
   loop?: boolean
   alternate?: boolean
@@ -34,7 +34,10 @@ export function useAnimeOnView(
           if (once && hasAnimated.current) return
           hasAnimated.current = true
 
-          animate(element, params)
+          anime({
+            targets: element,
+            ...params
+          })
         }
       },
       { threshold }
@@ -77,7 +80,8 @@ export function useAnimeStagger(
           if (once && hasAnimated.current) return
           hasAnimated.current = true
 
-          animate(children, {
+          anime({
+            targets: children,
             opacity: [0, 1],
             ...params,
           })
@@ -127,7 +131,7 @@ export const animePresets = {
     opacity: [0, 1],
     translateY: [40, 0],
     duration: 600,
-    delay: stagger(100),
+    delay: anime.stagger(100),
     ease: 'outQuad',
   },
   slideInFromBottom: {
@@ -156,14 +160,17 @@ export const animePresets = {
     translateY: [0, -10, 0],
     duration: 1000,
     loop: true,
-    delay: stagger(100),
+    delay: anime.stagger(100),
     ease: 'inOutSine',
   },
 }
 
 // Utility function for running animations imperatively
 export function runAnime(target: Element | Element[] | NodeListOf<Element>, params: AnimeParams) {
-  return animate(target, params)
+  return anime({
+    targets: target,
+    ...params
+  })
 }
 
 // Text animation utility
@@ -186,11 +193,12 @@ export function animateText(
     return span
   })
 
-  animate(chars, {
+  anime({
+    targets: chars,
     opacity: [0, 1],
     translateY: [20, 0],
     duration: 600,
-    delay: stagger(30, { start: options?.delay || 0 }),
+    delay: anime.stagger(30, { start: options?.delay || 0 }),
     ease: 'outQuad',
   })
 }

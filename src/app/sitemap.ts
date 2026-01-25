@@ -5,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lapesqueria.com'
 
   // Get all products
-  let products = []
+  let products: { slug: string; updatedAt: Date }[] = []
   try {
     products = await prisma.product.findMany({
       select: { slug: true, updatedAt: true }
@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Get all blog posts
-  let blogPosts = []
+  let blogPosts: { slug: string; updatedAt: Date }[] = []
   try {
     blogPosts = await prisma.blogPost.findMany({
       select: { slug: true, updatedAt: true },
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Get all categories
-  let categories = []
+  let categories: { slug: string; updatedAt: Date }[] = []
   try {
     categories = await prisma.category.findMany({
       select: { slug: true, updatedAt: true }
