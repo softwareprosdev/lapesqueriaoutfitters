@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Share2, 
   TrendingUp, 
@@ -86,13 +87,14 @@ const MARKETING_TIPS = [
 
 // Quick action items
 const QUICK_ACTIONS = [
-  { label: "Schedule Instagram Post", icon: Instagram, color: "from-purple-500 to-pink-500" },
-  { label: "Create Facebook Ad", icon: Facebook, color: "from-blue-600 to-blue-500" },
-  { label: "Send Newsletter", icon: Megaphone, color: "from-teal-500 to-cyan-500" },
-  { label: "Create Discount Code", icon: Gift, color: "from-amber-500 to-orange-500" },
+  { label: "Schedule Instagram Post", icon: Instagram, color: "from-purple-500 to-pink-500", href: "/admin/ai-marketing/social-media" },
+  { label: "Create Facebook Ad", icon: Facebook, color: "from-blue-600 to-blue-500", href: "/admin/ai-marketing/social-media" },
+  { label: "Send Newsletter", icon: Megaphone, color: "from-teal-500 to-cyan-500", href: "/admin/email-campaigns" },
+  { label: "Create Discount Code", icon: Gift, color: "from-amber-500 to-orange-500", href: "/admin/discounts/new" },
 ];
 
 export default function MarketingPage() {
+  const router = useRouter();
   const [selectedTemplate, setSelectedTemplate] = useState<string>('newProduct');
   const [selectedPlatform, setSelectedPlatform] = useState<'instagram' | 'facebook' | 'twitter'>('instagram');
   const [copied, setCopied] = useState(false);
@@ -186,9 +188,9 @@ export default function MarketingPage() {
         ) : analytics ? (
           [
             { label: "This Month's Visits", value: formatNumber(analytics.estimatedVisitors), change: `${analytics.changes.orders >= 0 ? '+' : ''}${Math.round(analytics.changes.orders)}%`, icon: Eye, color: "text-green-600", bgColor: "bg-green-100" },
-            { label: "Social Referrals", value: formatNumber(analytics.socialReferrals), change: "+15%", icon: Share2, color: "text-blue-600", bgColor: "bg-blue-100" },
-            { label: "Newsletter Subs", value: formatNumber(analytics.newsletterSubscribers), change: "+5%", icon: Users, color: "text-purple-600", bgColor: "bg-purple-100" },
-            { label: "Conversion Rate", value: `${analytics.conversionRate}%`, change: "+0.4%", icon: Target, color: "text-teal-600", bgColor: "bg-teal-100" },
+            { label: "Total Orders", value: formatNumber(analytics.socialReferrals), change: `${analytics.changes.orders >= 0 ? '+' : ''}${Math.round(analytics.changes.orders)}%`, icon: Share2, color: "text-blue-600", bgColor: "bg-blue-100" },
+            { label: "Newsletter Subs", value: formatNumber(analytics.newsletterSubscribers), change: "", icon: Users, color: "text-purple-600", bgColor: "bg-purple-100" },
+            { label: "Conversion Rate", value: `${analytics.conversionRate}%`, change: "", icon: Target, color: "text-teal-600", bgColor: "bg-teal-100" },
           ].map((stat, i) => (
             <Card key={i} className="border-slate-200">
               <CardContent className="p-4">
@@ -196,7 +198,7 @@ export default function MarketingPage() {
                   <div>
                     <p className="text-sm text-slate-500">{stat.label}</p>
                     <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
-                    <p className={`text-sm ${stat.color}`}>{stat.change} from last month</p>
+                    {stat.change && <p className={`text-sm ${stat.color}`}>{stat.change} from last month</p>}
                   </div>
                   <div className={`p-3 rounded-xl ${stat.bgColor}`}>
                     <stat.icon className={`w-6 h-6 ${stat.color}`} />
@@ -221,6 +223,7 @@ export default function MarketingPage() {
             {QUICK_ACTIONS.map((action, i) => (
               <button
                 key={i}
+                onClick={() => router.push(action.href)}
                 className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white font-semibold text-sm hover:scale-105 transition-transform flex items-center gap-2 justify-center`}
               >
                 <action.icon className="w-5 h-5" />
@@ -415,23 +418,22 @@ export default function MarketingPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {[
-              { source: "Instagram", visits: 1234, percent: 43, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
-              { source: "Facebook", visits: 567, percent: 20, color: "bg-gradient-to-r from-blue-600 to-blue-500" },
-              { source: "Google Search", visits: 456, percent: 16, color: "bg-gradient-to-r from-amber-500 to-orange-500" },
-              { source: "Direct", visits: 389, percent: 14, color: "bg-gradient-to-r from-slate-500 to-slate-600" },
-              { source: "Pinterest", visits: 201, percent: 7, color: "bg-gradient-to-r from-red-500 to-pink-500" },
-            ].map((s, i) => (
-              <div key={i} className="p-4 rounded-xl bg-slate-50 text-center">
-                <p className="text-sm font-medium text-slate-600">{s.source}</p>
-                <p className="text-2xl font-bold text-slate-900 my-1">{s.visits.toLocaleString()}</p>
-                <div className="w-full bg-slate-200 rounded-full h-2 mb-1">
-                  <div className={`${s.color} h-2 rounded-full`} style={{ width: `${s.percent}%` }} />
-                </div>
-                <p className="text-xs text-slate-500">{s.percent}% of traffic</p>
-              </div>
-            ))}
+          <div className="p-8 text-center bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+            <BarChart3 className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <p className="font-semibold text-slate-700 mb-1">Connect Google Analytics for Traffic Data</p>
+            <p className="text-sm text-slate-500 mb-4">
+              Per-source traffic data requires Google Analytics integration.
+              Set up GA4 to see where your visitors are coming from.
+            </p>
+            <a
+              href="https://analytics.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Set up Google Analytics
+            </a>
           </div>
         </CardContent>
       </Card>

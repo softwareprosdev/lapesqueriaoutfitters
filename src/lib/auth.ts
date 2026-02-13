@@ -4,9 +4,15 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
-// Ensure NEXTAUTH_SECRET is set
-if (!process.env.NEXTAUTH_SECRET) {
-  console.error('NEXTAUTH_SECRET environment variable is not set!')
+// Ensure NEXTAUTH_SECRET is set at runtime (not during build)
+if (!process.env.NEXTAUTH_SECRET && process.env.NODE_ENV !== 'production') {
+  console.warn('NEXTAUTH_SECRET environment variable is not set!')
+}
+
+function ensureSecret() {
+  if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error('NEXTAUTH_SECRET environment variable is not set! The app cannot start without it.')
+  }
 }
 
 export const authOptions: NextAuthOptions = {
@@ -19,6 +25,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        ensureSecret();
         try {
           if (!credentials?.email || !credentials?.password) {
             console.log('Missing email or password in credentials')
@@ -30,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           })
 
           if (!user || !user.password) {
-            console.log('User not found or no password set for:', credentials.email)
+            console.log('Authentication failed: user not found')
             return null
           }
 
@@ -40,7 +47,7 @@ export const authOptions: NextAuthOptions = {
           )
 
           if (!isPasswordValid) {
-            console.log('Invalid password for user:', credentials.email)
+            console.log('Authentication failed: invalid credentials')
             return null
           }
 

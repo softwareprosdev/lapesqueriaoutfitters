@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendEmail } from '@/lib/email';
+import CampaignEmail from '@/emails/CampaignEmail';
 
 // POST - Send campaign
 export async function POST(
@@ -96,16 +98,16 @@ export async function POST(
       });
     }
 
-    // Queue emails for sending via EmailLog
-    // In a real implementation, this would be processed by a background job
+    // Send emails to each recipient via Resend
     let sentCount = 0;
     for (const recipient of recipients) {
       try {
-        await prisma.emailLog.create({
+        // Create email log record
+        const emailLog = await prisma.emailLog.create({
           data: {
             to: recipient.email,
             subject: campaign.subject,
-            template: 'ORDER_CONFIRMATION', // Using existing template type
+            template: 'ADMIN_CUSTOM',
             status: 'pending',
             variables: {
               campaignId: id,
@@ -114,6 +116,23 @@ export async function POST(
               preheader: campaign.preheader,
             },
           },
+        });
+
+        // Actually send the email via Resend
+        await sendEmail({
+          to: recipient.email,
+          subject: campaign.subject,
+          react: CampaignEmail({
+            content: campaign.content || '',
+            preheader: campaign.preheader || undefined,
+            recipientName: recipient.name || undefined,
+          }),
+        });
+
+        // Update email log to sent
+        await prisma.emailLog.update({
+          where: { id: emailLog.id },
+          data: { status: 'sent', sentAt: new Date() },
         });
 
         // Update recipient as sent
@@ -129,7 +148,7 @@ export async function POST(
 
         sentCount++;
       } catch (error) {
-        console.error(`Failed to queue email for ${recipient.email}:`, error);
+        console.error(`Failed to send email to recipient:`, error);
         // Update recipient with error
         await prisma.campaignRecipient.updateMany({
           where: {

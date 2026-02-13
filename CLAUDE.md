@@ -4,61 +4,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **La Pesqueria Outfitters**, an e-commerce platform for fishing apparel, gear, and outdoor clothing based in McAllen, TX. Built with Next.js 16, Prisma, and PostgreSQL.
+This is **La Pesqueria Outfitters**, an e-commerce platform for fishing apparel, gear, and outdoor clothing based in McAllen, TX. Built with Next.js 16, Prisma, and PostgreSQL (NeonDB).
 
 ## Essential Commands
 
 ### Development
 ```bash
 npm run dev                # Start Next.js dev server on localhost:3000
-npm run build             # Build for production
+npm run build             # Build for production (TypeScript errors will fail the build)
 npm run start             # Start production server
 npm run lint              # Run ESLint
 ```
 
-### Database - Drizzle ORM
+### Database - Prisma
 ```bash
-npm run db:generate       # Generate migrations from schema
-npm run db:push          # Push schema changes to database
-npm run db:migrate       # Run migrations
-npm run db:studio        # Open Drizzle Studio (database GUI)
-```
-
-### Database - Payload CMS
-```bash
-npm run payload:generate  # Generate TypeScript types from collections
-npm run payload:migrate   # Run Payload migrations
-npm run payload:seed      # Seed admin user (email: admin@lapesqueria.com)
+npx prisma generate       # Generate Prisma client from schema
+npx prisma db push        # Push schema changes to database
+npx prisma migrate dev    # Create and run migrations
+npx prisma studio         # Open Prisma Studio (database GUI)
 ```
 
 ## Architecture
 
-### Dual Database System
+### Database
 
-This project uses **two separate database systems** that coexist:
+Uses **Prisma ORM** with a single PostgreSQL database (NeonDB serverless).
 
-1. **Drizzle ORM** (`src/lib/db/schema.ts`)
-   - Custom application tables for products, orders, inventory
-   - Used by the public-facing Next.js frontend
-   - Schema includes: products, productVariants, inventoryTransactions, categories, productCategories, orders, orderItems, conservationDonations, adminUsers
-
-2. **Payload CMS** (`payload-config.ts` + `src/collections/`)
-   - Headless CMS with admin panel at `/admin`
-   - Separate PostgreSQL tables managed by Payload
-   - Collections: Users, Products, Categories, Orders, Media
-   - Provides REST API at `/api/*`
-
-**IMPORTANT**: These are **not** integrated. Changes in one system do not automatically sync to the other. The frontend currently uses temporary data while the Payload admin panel manages its own dataset.
+- **Schema**: `prisma/schema.prisma`
+- **Client**: `src/lib/prisma.ts` (optimized singleton for NeonDB)
+- **Re-export**: `src/lib/db.ts` re-exports from `prisma.ts` for backward compatibility
+- Key tables: products, productVariants, orders, orderItems, inventoryTransactions, conservationDonations, users, customerRewards, analyticsEvents, emailLog, emailCampaigns, socialMediaPosts, cloverItems/Orders/Payments
 
 ### Route Groups
 
-- `src/app/(payload)/` - Payload CMS admin interface routes
-  - Protected route group
-  - Contains admin panel at `/admin`
-
-- `src/app/` - Public-facing pages
-  - Product catalog, cart, checkout, conservation info
-  - Uses React Server Components
+- `src/app/admin/` - Admin dashboard pages (protected by NextAuth)
+- `src/app/` - Public-facing pages (product catalog, cart, checkout, conservation info)
+- `src/app/api/` - API routes
 
 ### State Management
 
@@ -67,52 +48,76 @@ This project uses **two separate database systems** that coexist:
   - Manages: items, subtotal, shipping ($5.95 if under $50), tax (8.25%), total
   - Cart state is not persisted (resets on page refresh)
 
-### Key Collections (Payload CMS)
+### Auth
 
-All collections in `src/collections/`:
-
-- **Products**: Supports variants (size, color, material), conservation info (donation percentage), multiple images, SKU management
-- **Categories**: Product categorization with slugs
-- **Orders**: Stripe integration hooks, order tracking, customer info
-- **Media**: Cloud storage via Vercel Blob, automatic image resizing
-- **Users**: Role-based access (admin, staff, customer)
+- **NextAuth** (`src/lib/auth.ts`) with credentials provider
+- JWT strategy, 30-day sessions
+- Roles: ADMIN, STAFF, CUSTOMER
+- Admin panel at `/admin/login`
+- **NEXTAUTH_SECRET** is required — app throws on startup without it
 
 ### Type System
 
-- **Drizzle types**: Inferred from `src/lib/db/schema.ts`
-- **Payload types**: Auto-generated in `payload-types.ts` via `npm run payload:generate`
+- **Prisma types**: Auto-generated from `prisma/schema.prisma`
 - **Application types**: `src/types/index.ts` - shared frontend/backend types
 
 ## Important Patterns
 
+### Checkout Flow
+
+- Checkout API: `POST /api/checkout/create-session`
+- Validates cart with Zod, creates order via `createOrder()` (`src/lib/orders.ts`)
+- Creates matching Clover order if `CLOVER_ACCESS_TOKEN` and `CLOVER_MERCHANT_ID` are configured
+- Sends order confirmation email via Resend
+- Returns `{ url: '/checkout/success?session_id={orderId}' }`
+
+### Email System
+
+- **Resend** for transactional emails (`src/lib/email.ts`)
+- React Email templates in `src/emails/`:
+  - `OrderConfirmation.tsx` - order confirmation
+  - `AbandonedCartRecovery.tsx` - cart recovery
+  - `CampaignEmail.tsx` - marketing campaigns
+  - `StaffInviteEmail.tsx` - staff invitations
+  - `WelcomeEmail.tsx` - new user welcome
+- All use `OceanEmailLayout` wrapper component
+
+### Clover POS Integration
+
+- **Client**: `src/lib/clover.ts` - `createCloverClient()` reads from env vars
+- **Sync page**: `/admin/clover-sync` - auto-detects env var credentials, one-click sync
+- **API routes**: `/api/admin/clover/fetch`, `/api/admin/clover/import`, `/api/admin/clover/config`
+- Credentials fall back to `CLOVER_ACCESS_TOKEN` and `CLOVER_MERCHANT_ID` env vars
+
+### AI Marketing
+
+- Social media post generation: `/api/admin/ai-marketing/generate-social-post` (Google Generative AI)
+- Post scheduling: `/api/admin/ai-marketing/schedule-post` (stored in DB)
+- Social media UI at `/admin/ai-marketing/social-media`
+
 ### Image Handling
 
-- **Remote Images**: Configured for Unsplash and Vercel Blob Storage
+- **Remote Images**: Configured for Unsplash and Cloudinary
   - See `next.config.ts` remotePatterns
-  - Payload Media collection uploads to Vercel Blob
-- **Sharp**: Used for image processing in Payload
+- **Sharp**: Used for image processing
 
 ### Path Aliases
 
 ```typescript
 @/*              // src/*
-@payload-config  // payload-config.ts
 ```
 
 ### Conservation Donations
 
 Products track conservation info:
 - 10% default donation percentage (configurable per product)
-- Conservation focus field for specific causes
 - `conservationDonations` table tracks pledged/donated amounts per order
+- Regions: Rio Grande Valley, South Padre Island
 
 ### Product Variants
 
 Products can have multiple variants with individual:
-- Pricing
-- Stock levels
-- SKUs
-- Images
+- Pricing, Stock levels, SKUs, Images
 - Attributes (size, color, material)
 
 Cart operations work at the variant level, not the product level.
@@ -121,20 +126,21 @@ Cart operations work at the variant level, not the product level.
 
 Environment variables required:
 ```env
-# Payload CMS
-PAYLOAD_SECRET=dev-secret-key-change-in-production
-DB_USER=
-DB_PASSWORD=
-DB_HOST=
-DB_PORT=5432
-DB_NAME=
+DATABASE_URL=              # PostgreSQL connection string (NeonDB)
+NEXTAUTH_SECRET=           # Required - app won't start without it
+NEXTAUTH_URL=              # Base URL for auth callbacks
 
-# Drizzle ORM
-POSTGRES_URL=
-DATABASE_URL=
+# Clover POS (optional)
+CLOVER_ACCESS_TOKEN=
+CLOVER_MERCHANT_ID=
+CLOVER_APP_ID=
+CLOVER_APP_SECRET=
 
-# Vercel Blob Storage
-IMAGES_READ_WRITE_TOKEN=
+# Email (optional - emails silently skip if not configured)
+RESEND_API_KEY=
+
+# AI Marketing (optional)
+GOOGLE_GENERATIVE_AI_KEY=
 ```
 
 ## Development Workflow
@@ -142,41 +148,18 @@ IMAGES_READ_WRITE_TOKEN=
 ### First-Time Setup
 
 1. Install dependencies: `npm install`
-2. Set up PostgreSQL database
+2. Set up PostgreSQL database (NeonDB recommended)
 3. Configure environment variables (`.env.local`)
-4. Run Payload migrations: `npm run payload:migrate`
-5. Seed admin user: `npm run payload:seed`
-6. Start dev server: `npm run dev`
-7. Access admin panel: `http://localhost:3000/admin`
-
-### Working with Payload
-
-- Admin panel changes auto-generate types on save
-- Use `npm run payload:generate` to manually regenerate types
-- Collections use role-based access control
-- Admin/staff can create/edit products; customers view their orders only
+4. Push schema: `npx prisma db push`
+5. Start dev server: `npm run dev`
+6. Access admin panel: `http://localhost:3000/admin`
 
 ### ESLint Configuration
 
 - Uses Next.js TypeScript config
-- ESLint errors ignored during builds (`ignoreDuringBuilds: true`)
 - Flat config format (ESLint 9+)
 
 ## Special Considerations
-
-### Migration Path
-
-The codebase is in transition:
-- Temporary product data may exist in `@/data/products` (not currently active)
-- Payload CMS provides the content management layer
-- Frontend components expect Drizzle ORM types
-- Eventual integration between systems is needed
-
-### Stripe Integration
-
-- Orders collection has `stripePaymentIntentId` field
-- Integration hooks are set up but implementation needed
-- Payment flow not yet complete
 
 ### Inventory Management
 
@@ -188,7 +171,12 @@ The codebase is in transition:
 ### Conservation Tracking
 
 Each order can have associated conservation donations:
-- Linked to conservation organizations
 - Tracked by region (Rio Grande Valley, South Padre Island)
-- Status: pledged → donated
+- Status: pledged -> donated
 - Receipt URL storage for transparency
+
+### Security
+
+- PII (emails, passwords) is NOT logged in auth flows
+- `ignoreBuildErrors` is `false` — TypeScript errors fail the build
+- Placeholder data (phone numbers, etc.) has been removed from SEO schemas

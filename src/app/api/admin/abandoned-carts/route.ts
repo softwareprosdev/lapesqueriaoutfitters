@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendEmail } from '@/lib/email';
+import AbandonedCartRecoveryEmail from '@/emails/AbandonedCartRecovery';
 
 // Note: This uses analytics events to track abandoned carts
 // A cart is considered abandoned if:
@@ -129,13 +131,21 @@ export async function GET(request: Request) {
     const totalValue = abandonedSessions.reduce((sum, c) => sum + Number(c.cartValue), 0);
     const avgValue = abandonedSessions.length > 0 ? totalValue / abandonedSessions.length : 0;
 
-    // Get recovery stats (placeholder - would need email tracking)
+    // Get recovery stats from email logs
+    const emailsSent = await prisma.emailLog.count({
+      where: {
+        template: 'ADMIN_CUSTOM',
+        variables: { path: ['type'], equals: 'abandoned_cart_recovery' },
+        status: 'sent',
+      },
+    });
+
     const stats = {
       totalAbandoned: Number(totalCount[0]?.count || 0),
       totalValue,
       averageValue: avgValue,
-      recoveryRate: 0, // TODO: Calculate from recovered orders
-      emailsSent: 0,
+      recoveryRate: 0,
+      emailsSent,
       recovered: 0,
       recoveredValue: 0,
     };
@@ -178,12 +188,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: Implement actual email sending via your email provider
-    // For now, log the recovery attempt
-    await prisma.emailLog.create({
+    // Create email log record
+    const emailLog = await prisma.emailLog.create({
       data: {
         to: email,
-        subject: "Complete Your Order at La Pesqueria's Studio",
+        subject: "Complete Your Order at La Pesqueria Outfitters",
         template: 'ADMIN_CUSTOM',
         status: 'pending',
         variables: {
@@ -195,9 +204,42 @@ export async function POST(request: Request) {
       },
     });
 
+    // Send the actual recovery email via Resend
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'https://lapesqueriaoutfitters.com';
+      await sendEmail({
+        to: email,
+        subject: "Complete Your Order at La Pesqueria Outfitters",
+        react: AbandonedCartRecoveryEmail({
+          items: items?.map((item: { productName?: string; name?: string; quantity: number; price: number }) => ({
+            productName: item.productName || item.name || 'Product',
+            quantity: item.quantity || 1,
+            price: item.price || 0,
+          })) || [],
+          cartValue: cartValue || 0,
+          checkoutUrl: `${baseUrl}/shop`,
+        }),
+      });
+
+      // Update log status to sent
+      await prisma.emailLog.update({
+        where: { id: emailLog.id },
+        data: { status: 'sent', sentAt: new Date() },
+      });
+    } catch (emailError) {
+      console.error('Failed to send recovery email:', emailError);
+      await prisma.emailLog.update({
+        where: { id: emailLog.id },
+        data: {
+          status: 'failed',
+          error: emailError instanceof Error ? emailError.message : 'Unknown error',
+        },
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Recovery email queued',
+      message: 'Recovery email sent',
     });
   } catch (error) {
     console.error('Send recovery email error:', error);

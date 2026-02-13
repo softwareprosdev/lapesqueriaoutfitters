@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendEmail } from '@/lib/email';
+import StaffInviteEmail from '@/emails/StaffInviteEmail';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 
@@ -206,7 +208,26 @@ export async function POST(request: Request) {
         },
       });
 
-      // TODO: Send invite email
+      // Send invite email
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'https://lapesqueriaoutfitters.com';
+        await sendEmail({
+          to: validated.email,
+          subject: `You're invited to join La Pesqueria Outfitters`,
+          react: StaffInviteEmail({
+            inviterName: session.user.name || invite.inviter?.name || 'Admin',
+            role: validated.role,
+            inviteUrl: `${baseUrl}/admin/accept-invite?token=${invite.id}`,
+            expiresAt: invite.expiresAt.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }),
+          }),
+        });
+      } catch (emailError) {
+        console.error('Failed to send staff invite email:', emailError);
+      }
 
       return NextResponse.json({ invite }, { status: 201 });
     }

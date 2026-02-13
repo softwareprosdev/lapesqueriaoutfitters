@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
             subject: "🌊 Welcome Back to La Pesqueria's Studio!",
             react: WelcomeEmail({ customerName: name || existing.name || 'Ocean Lover' }),
           });
-          console.log(`Welcome back email sent to ${email}`);
+          console.log('Welcome back email sent successfully');
         } catch (emailError) {
           console.error('Failed to send welcome back email:', emailError);
         }
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
         subject: "🌊 Welcome to La Pesqueria's Studio - Your Ocean Conservation Journey Begins!",
         react: WelcomeEmail({ customerName: name || 'Ocean Lover' }),
       });
-      console.log(`Welcome email sent to ${email}`);
+      console.log('Welcome email sent successfully');
     } catch (emailError) {
       // Don't fail the subscription if email fails
       console.error('Failed to send welcome email:', emailError);

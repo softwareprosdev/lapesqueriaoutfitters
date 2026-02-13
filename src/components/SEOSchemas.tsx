@@ -52,7 +52,6 @@ export default function SEOSchemas() {
       "longitude": "-98.2531"
     },
     "url": "https://lapesqueriaoutfitters.com",
-    "telephone": "+1-956-XXX-XXXX",
     "priceRange": "$$",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",

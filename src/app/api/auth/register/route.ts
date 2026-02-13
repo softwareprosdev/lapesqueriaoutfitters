@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
           customerName: user.name || 'Ocean Lover',
         }),
       });
-      console.log('Welcome email sent to:', user.email);
+      console.log('Welcome email sent successfully');
     } catch (emailError: unknown) {
       console.error('Failed to send welcome email:', emailError);
     }

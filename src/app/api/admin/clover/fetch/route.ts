@@ -122,11 +122,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { apiToken, merchantId }: CloverConfig = await request.json();
+    const body = await request.json();
+    const apiToken = body.apiToken || process.env.CLOVER_ACCESS_TOKEN;
+    const merchantId = body.merchantId || process.env.CLOVER_MERCHANT_ID;
 
     if (!apiToken || !merchantId) {
       return NextResponse.json(
-        { error: 'API Token and Merchant ID are required' },
+        { error: 'API Token and Merchant ID are required. Configure CLOVER_ACCESS_TOKEN and CLOVER_MERCHANT_ID environment variables or provide them in the request.' },
         { status: 400 }
       );
     }

@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
 
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   serverExternalPackages: ['sharp', 'pino', 'pino-pretty'],
   // Cache configuration for better Redis integration

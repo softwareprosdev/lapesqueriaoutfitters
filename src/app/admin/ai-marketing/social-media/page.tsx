@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,12 +32,35 @@ export default function SocialMediaAutomation() {
   const [platform, setPlatform] = useState<'instagram' | 'facebook' | 'twitter'>('instagram');
   const [generatedPosts, setGeneratedPosts] = useState<GeneratedPost[]>([]);
 
-  // Demo stats - in production, fetch from API
-  const stats = {
-    instagram: { posts: 24, engagement: '4.2%', reach: '12.5K' },
-    facebook: { posts: 18, engagement: '2.8%', reach: '8.3K' },
-    twitter: { posts: 42, engagement: '1.5%', reach: '5.1K' },
-  };
+  const [stats, setStats] = useState({
+    instagram: { posts: 0, engagement: '-', reach: '-' },
+    facebook: { posts: 0, engagement: '-', reach: '-' },
+    twitter: { posts: 0, engagement: '-', reach: '-' },
+  });
+
+  // Fetch real post counts on mount
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/admin/ai-marketing/schedule-post');
+        if (response.ok) {
+          const data = await response.json();
+          const posts = data.posts || [];
+          const igPosts = posts.filter((p: { platform: string }) => p.platform === 'instagram').length;
+          const fbPosts = posts.filter((p: { platform: string }) => p.platform === 'facebook').length;
+          const twPosts = posts.filter((p: { platform: string }) => p.platform === 'twitter').length;
+          setStats({
+            instagram: { posts: igPosts, engagement: '-', reach: '-' },
+            facebook: { posts: fbPosts, engagement: '-', reach: '-' },
+            twitter: { posts: twPosts, engagement: '-', reach: '-' },
+          });
+        }
+      } catch {
+        // Keep defaults on error
+      }
+    };
+    fetchStats();
+  }, []);
 
   const handleGeneratePost = async () => {
     if (!productName || !productDescription) {
@@ -46,29 +69,75 @@ export default function SocialMediaAutomation() {
     }
 
     setLoading(true);
-    
-    // Simulate AI generation - in production, call actual API
-    setTimeout(() => {
+
+    try {
+      const response = await fetch('/api/admin/ai-marketing/generate-social-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product: {
+            name: productName,
+            description: productDescription,
+            price: parseFloat(productPrice) || 0,
+            category: 'Fishing Apparel',
+          },
+          platform,
+          tone: 'enthusiastic',
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate post');
+      }
+
+      const data = await response.json();
+
       const newPost: GeneratedPost = {
         id: `post_${Date.now()}`,
         platform,
-        caption: `Check out our ${productName}! ${productDescription.substring(0, 100)}...`,
-        hashtags: ['fishing', 'apparel', 'outdoor', productName.toLowerCase().replace(/\s+/g, '')],
+        caption: data.caption,
+        hashtags: data.hashtags || [],
         status: 'draft',
         createdAt: new Date(),
       };
-      
+
       setGeneratedPosts(prev => [newPost, ...prev]);
-      toast.success('Post generated successfully!');
+      toast.success('Post generated with AI!');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to generate post');
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const handleSchedulePost = async (post: GeneratedPost) => {
-    toast.success(`Post scheduled for ${platform}!`);
-    setGeneratedPosts(prev => 
-      prev.map(p => p.id === post.id ? { ...p, status: 'scheduled', scheduledAt: new Date() } : p)
-    );
+    try {
+      const response = await fetch('/api/admin/ai-marketing/schedule-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: post.platform,
+          caption: post.caption,
+          hashtags: post.hashtags,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to schedule post');
+      }
+
+      const data = await response.json();
+      toast.success(`Post scheduled for ${post.platform}!`);
+      setGeneratedPosts(prev =>
+        prev.map(p => p.id === post.id
+          ? { ...p, status: 'scheduled', scheduledAt: new Date(data.post.scheduledAt) }
+          : p
+        )
+      );
+    } catch {
+      toast.error('Failed to schedule post');
+    }
   };
 
   const handlePublishNow = async (post: GeneratedPost) => {

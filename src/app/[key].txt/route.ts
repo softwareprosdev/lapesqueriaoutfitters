@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ key: string }> }
+  context: any
 ) {
   const params = await context.params;
   const requestedKey = params.key;

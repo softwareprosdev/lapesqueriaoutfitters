@@ -1116,8 +1116,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { config, syncData, options }: {
-      config: CloverConfig;
+    const body = await request.json();
+    const config: CloverConfig = {
+      apiToken: body.config.apiToken || process.env.CLOVER_ACCESS_TOKEN || '',
+      merchantId: body.config.merchantId || process.env.CLOVER_MERCHANT_ID || '',
+    };
+    const { syncData, options }: {
       syncData: {
         items?: CloverItemData[];
         categories?: CloverCategoryData[];
@@ -1128,7 +1132,7 @@ export async function POST(request: NextRequest) {
         taxRates?: CloverTaxRateData[];
       };
       options: SyncOptions;
-    } = await request.json();
+    } = body;
 
     const results: Record<string, ImportResult> = {};
 

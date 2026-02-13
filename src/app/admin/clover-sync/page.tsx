@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import {
   Loader2,
   Download,
@@ -67,10 +68,27 @@ export default function CloverSyncPage() {
     skipDuplicates: true
   });
 
+  const [envConfigured, setEnvConfigured] = useState<{ configured: boolean; merchantId?: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [syncData, setSyncData] = useState<SyncData | null>(null);
   const [syncProgress, setSyncProgress] = useState<string>('');
   const [syncResults, setSyncResults] = useState<any>(null);
+
+  // Check if env vars are configured on mount
+  useEffect(() => {
+    const checkConfig = async () => {
+      try {
+        const response = await fetch('/api/admin/clover/config');
+        if (response.ok) {
+          const data = await response.json();
+          setEnvConfigured(data);
+        }
+      } catch {
+        // Silently fail - user can still enter manually
+      }
+    };
+    checkConfig();
+  }, []);
 
   const handleConfigChange = (field: keyof CloverConfig, value: string) => {
     setConfig(prev => ({ ...prev, [field]: value }));
@@ -81,7 +99,7 @@ export default function CloverSyncPage() {
   };
 
   const fetchCloverData = async () => {
-    if (!config.apiToken || !config.merchantId) {
+    if (!config.apiToken && !config.merchantId && !envConfigured?.configured) {
       toast.error('Please enter both API Token and Merchant ID');
       return;
     }
@@ -211,7 +229,45 @@ export default function CloverSyncPage() {
             </div>
           </div>
 
+          {envConfigured?.configured && (
+            <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-green-800">
+                  Clover credentials detected from environment variables
+                </p>
+                <p className="text-xs text-green-600">
+                  Merchant ID: {envConfigured.merchantId}
+                </p>
+              </div>
+              <Badge variant="outline" className="border-green-300 text-green-700">Configured</Badge>
+            </div>
+          )}
+
           <div className="flex gap-3">
+            {envConfigured?.configured && (
+              <Button
+                onClick={() => {
+                  // Send empty credentials - server will use env vars
+                  setConfig({ apiToken: '', merchantId: '' });
+                  fetchCloverData();
+                }}
+                disabled={isLoading}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Sync Now (Use Configured Credentials)
+                  </>
+                )}
+              </Button>
+            )}
             <Button
               onClick={fetchCloverData}
               disabled={isLoading || !config.apiToken || !config.merchantId}
@@ -225,7 +281,7 @@ export default function CloverSyncPage() {
               ) : (
                 <>
                   <Download className="w-4 h-4 mr-2" />
-                  Fetch Clover Data
+                  Fetch with Manual Credentials
                 </>
               )}
             </Button>
